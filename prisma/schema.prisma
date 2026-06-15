@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  UNPAID
+  PENDING
+  PAID
+}
+
+enum PaymentStatus {
+  DETECTED
+  CONFIRMED
+  FAILED
+}
+
+model Merchant {
+  id           String    @id @default(uuid())
+  businessName String
+  email        String    @unique
+  apiKeyHash   String?   @unique
+  country      String?
+  invoices     Invoice[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Invoice {
+  id              String           @id @default(uuid())
+  merchantId      String
+  merchant        Merchant         @relation(fields: [merchantId], references: [id])
+  invoiceNumber   String           @unique
+  customerName    String
+  customerEmail   String
+  amount          Decimal          @db.Decimal(18, 2)
+  currency        String           @default("USD")
+  stablecoin      String           @default("USDC")
+  walletAddress   String?
+  status          InvoiceStatus    @default(DRAFT)
+  description     String?
+  dueDate         DateTime?
+  paidAt          DateTime?
+  payments        Payment[]
+  transactionLogs TransactionLog[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([merchantId])
+  @@index([status])
+  @@index([invoiceNumber])
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  invoiceId      String
+  invoice        Invoice       @relation(fields: [invoiceId], references: [id])
+  amountExpected Decimal       @db.Decimal(18, 2)
+  amountReceived Decimal?      @db.Decimal(18, 2)
+  stablecoin     String        @default("USDC")
+  walletAddress  String?
+  txHash         String?       @unique
+  status         PaymentStatus @default(DETECTED)
+  detectedAt     DateTime      @default(now())
+  confirmedAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([invoiceId])
+  @@index([status])
+  @@index([txHash])
+}
+
+model TransactionLog {
+  id        String         @id @default(uuid())
+  invoiceId String
+  invoice   Invoice        @relation(fields: [invoiceId], references: [id])
+  action    String
+  oldStatus InvoiceStatus?
+  newStatus InvoiceStatus?
+  message   String?
+  metadata  Json?
+  createdAt DateTime       @default(now())
+
+  @@index([invoiceId])
+  @@index([action])
+}
