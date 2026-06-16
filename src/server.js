@@ -9,6 +9,14 @@ const prisma = require("./prisma");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.get("/health", (req, res) => {
+  return res.status(200).json({
+    status: "ok",
+    service: "AfriSettle API",
+    version: "1.0.0",
+  });
+});
+
 app.use(helmet());
 app.use(
   rateLimit({
@@ -17,14 +25,6 @@ app.use(
   })
 );
 app.use(express.json());
-
-app.get("/health", (req, res) => {
-  return res.status(200).json({
-    status: "ok",
-    service: "AfriSettle API",
-    version: "1.0.0",
-  });
-});
 
 function generateApiKey() {
   return `as_live_${crypto.randomBytes(32).toString("hex")}`;
