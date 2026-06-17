@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
+const path = require("path");
 const prisma = require("./prisma");
 
 const app = express();
@@ -17,7 +18,16 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        scriptSrc: ["'self'", "https://cdn.tailwindcss.com"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+      },
+    },
+  })
+);
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -25,6 +35,11 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "..", "public")));
+
+app.get("/dashboard", (req, res) => {
+  return res.sendFile(path.join(__dirname, "..", "public", "dashboard.html"));
+});
 
 function generateApiKey() {
   return `as_live_${crypto.randomBytes(32).toString("hex")}`;
