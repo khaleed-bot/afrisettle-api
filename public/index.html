@@ -1,0 +1,610 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AfriSettle | Stablecoin Payment Layer</title>
+    <link rel="icon" href="/assets/logo/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Poppins', 'sans-serif'] },
+            colors: {
+              brand: { blue: '#2563EB', green: '#10B981', navy: '#0F172A' }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      * { font-family: 'Poppins', sans-serif; }
+      .hero-card { background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%); }
+      .gradient-text { background: linear-gradient(135deg, #2563EB, #10B981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .cta-bg { background: linear-gradient(135deg, #0F172A 0%, #1e3a5f 100%); }
+      .feature-card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(37,99,235,0.1); }
+      .feature-card { transition: all 0.2s ease; }
+      .screen-card:hover { transform: scale(1.02); }
+      .screen-card { transition: all 0.2s ease; }
+      a { text-decoration: none; }
+      nav a { color: #0F172A; }
+    </style>
+  </head>
+  <body class="bg-white text-[#0F172A] antialiased">
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur-sm">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <a class="flex items-center gap-2" href="/">
+          <img class="h-12 w-44 object-contain object-left" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
+        </a>
+        <nav class="hidden items-center gap-10 text-[14px] font-semibold lg:flex">
+          <a href="#product" class="hover:text-brand-blue transition-colors">Product</a>
+          <a href="#features" class="hover:text-brand-blue transition-colors">Features</a>
+          <a href="#developers" class="hover:text-brand-blue transition-colors">Developers</a>
+          <a href="#about" class="hover:text-brand-blue transition-colors">About Us</a>
+          <a href="#contact" class="hover:text-brand-blue transition-colors">Contact</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <a class="hidden rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-[#0F172A] hover:bg-slate-50 transition-colors sm:inline-flex" href="/dashboard">Log in</a>
+          <a class="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-500/25 hover:bg-blue-700 transition-colors" style="background-color:#2563EB;color:#ffffff" href="/dashboard">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- HERO -->
+      <section class="mx-auto grid max-w-7xl gap-16 px-6 pb-14 pt-14 lg:grid-cols-[minmax(0,1fr)_600px] lg:items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-slate-600">
+            <img class="h-3.5 w-3.5" src="/assets/ui/sparkles.svg" alt="" />
+            The Future of Payments is Stable
+          </div>
+          <h1 class="mt-7 max-w-[600px] text-[46px] font-black leading-[1.08] tracking-[-0.035em] text-[#0F172A] md:text-[58px]">
+            The Stablecoin<br />Payment Layer for<br /><span class="text-brand-blue">African Business</span>
+          </h1>
+          <p class="mt-5 max-w-[520px] text-base leading-7 text-slate-500">
+            Create invoices, receive USDC payments, and settle instantly across borders using regulated stablecoin infrastructure powered by Circle.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a class="inline-flex h-12 min-w-[132px] items-center justify-center rounded-xl bg-blue-600 px-6 text-sm font-bold text-white shadow-lg shadow-blue-500/25 hover:bg-blue-700 transition-colors" style="background-color:#2563EB;color:#ffffff" href="/dashboard">
+              Get Started
+              <img class="ml-2 h-4 w-4 brightness-0 invert" src="/assets/ui/arrow-right.svg" alt="" />
+            </a>
+            <a class="inline-flex h-12 min-w-[132px] items-center justify-center rounded-xl border border-slate-200 bg-white px-6 text-sm font-bold text-[#0F172A] hover:bg-slate-50 transition-colors" href="/pay-invoice">
+              <img class="mr-2 h-4 w-4" src="/assets/ui/chevron-right.svg" alt="" />
+              View Demo
+            </a>
+          </div>
+          <p class="mt-5 flex items-center gap-2 text-sm font-medium text-slate-500">
+            <img class="h-4 w-4" src="/assets/ui/check.svg" alt="" />
+            No setup fees. Start in minutes.
+          </p>
+        </div>
+
+        <!-- Dashboard Preview Card -->
+        <div class="hero-card rounded-2xl border border-slate-200 bg-white p-3.5 shadow-2xl shadow-slate-200/70">
+          <div class="overflow-hidden rounded-xl border border-slate-100 bg-white" style="min-height:430px">
+            <div class="grid" style="grid-template-columns:136px 1fr;min-height:430px">
+              <aside class="border-r border-slate-100 bg-white p-4">
+                <div class="mb-6">
+                  <img class="h-10 w-32 object-contain object-left" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
+                </div>
+                <div class="space-y-1 text-[10px] font-semibold">
+                  <div class="flex items-center gap-2 rounded-md bg-blue-50 px-3 py-2 text-brand-blue"><img class="h-3 w-3" src="/assets/ui/home.svg" alt="" />Dashboard</div>
+                  <div class="flex items-center gap-2 px-3 py-2 text-slate-500"><img class="h-3 w-3" src="/assets/ui/file-text.svg" alt="" />Invoices</div>
+                  <div class="flex items-center gap-2 px-3 py-2 text-slate-500"><img class="h-3 w-3" src="/assets/ui/credit-card.svg" alt="" />Payments</div>
+                  <div class="flex items-center gap-2 px-3 py-2 text-slate-500"><img class="h-3 w-3" src="/assets/ui/wallet.svg" alt="" />Wallets</div>
+                  <div class="flex items-center gap-2 px-3 py-2 text-slate-500"><img class="h-3 w-3" src="/assets/ui/activity.svg" alt="" />Analytics</div>
+                  <div class="flex items-center gap-2 px-3 py-2 text-slate-500"><img class="h-3 w-3" src="/assets/ui/settings.svg" alt="" />Settings</div>
+                </div>
+                <div class="mt-16 flex items-center gap-2 text-[9px] font-semibold text-slate-600">
+                  <span class="flex h-6 w-6 items-center justify-center rounded bg-white">
+                    <img class="h-5 w-5 object-contain" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
+                  </span>
+                  <span>Acme Stores Ltd</span>
+                </div>
+              </aside>
+              <div class="bg-white p-5">
+                <div class="mb-5 flex items-center justify-between">
+                  <h2 class="text-xl font-black text-[#0F172A]">Dashboard</h2>
+                  <div class="flex items-center gap-3">
+                    <img class="h-4 w-4" src="/assets/ui/bell.svg" alt="" />
+                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-xs font-black text-brand-blue">MA</span>
+                  </div>
+                </div>
+                <div class="mb-4 grid grid-cols-4 gap-2.5">
+                  <div class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div class="mb-1 flex h-6 w-6 items-center justify-center rounded-full bg-blue-50"><img class="h-3.5 w-3.5" src="/assets/ui/wallet.svg" alt="" /></div>
+                    <p class="text-[9px] font-semibold text-slate-500">Total Balance</p>
+                    <p class="mt-1 text-sm font-black text-[#0F172A]">2,450.00 <span class="text-[9px]">USDC</span></p>
+                    <p class="text-[9px] text-slate-500">= $2,450.00</p>
+                  </div>
+                  <div class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div class="mb-1 flex h-6 w-6 items-center justify-center rounded-full bg-amber-50"><img class="h-3.5 w-3.5" src="/assets/ui/clock.svg" alt="" /></div>
+                    <p class="text-[9px] font-semibold text-slate-500">In Settlement</p>
+                    <p class="mt-1 text-sm font-black text-[#0F172A]">340.00 <span class="text-[9px]">USDC</span></p>
+                    <p class="text-[9px] text-slate-500">= $340.00</p>
+                  </div>
+                  <div class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div class="mb-1 flex h-6 w-6 items-center justify-center rounded-full bg-blue-50"><img class="h-3.5 w-3.5" src="/assets/ui/file-text.svg" alt="" /></div>
+                    <p class="text-[9px] font-semibold text-slate-500">Total Invoices</p>
+                    <p class="mt-1 text-sm font-black text-[#0F172A]">124</p>
+                    <p class="text-[9px] text-slate-500">This month</p>
+                  </div>
+                  <div class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div class="mb-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-50"><img class="h-3.5 w-3.5" src="/assets/ui/check.svg" alt="" /></div>
+                    <p class="text-[9px] font-semibold text-slate-500">Success Rate</p>
+                    <p class="mt-1 text-sm font-black text-brand-green">98.7%</p>
+                    <p class="text-[9px] text-slate-500">This month</p>
+                  </div>
+                </div>
+                <div class="grid gap-3 lg:grid-cols-[1.28fr_1fr]">
+                  <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <div class="mb-3 flex items-center justify-between">
+                      <p class="text-xs font-black text-[#0F172A]">Payment Overview</p>
+                      <div class="flex gap-3 text-[8px] text-slate-500"><span class="text-brand-blue">Received (USDC)</span><span class="text-amber-500">In Settlement (USDC)</span></div>
+                    </div>
+                    <div class="relative h-[185px]">
+                      <svg class="h-full w-full" viewBox="0 0 330 185" preserveAspectRatio="none" aria-hidden="true">
+                        <line x1="26" x2="315" y1="32" y2="32" stroke="#e5eaf2" />
+                        <line x1="26" x2="315" y1="68" y2="68" stroke="#e5eaf2" />
+                        <line x1="26" x2="315" y1="104" y2="104" stroke="#e5eaf2" />
+                        <line x1="26" x2="315" y1="140" y2="140" stroke="#e5eaf2" />
+                        <polyline points="28,150 64,80 98,122 134,90 170,128 206,72 242,45 278,88 314,42" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                        <polyline points="28,168 64,136 98,116 134,142 170,134 206,118 242,105 278,135 314,112" fill="none" stroke="#86a3ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <p class="mb-3 text-xs font-black text-[#0F172A]">Recent Activity</p>
+                    <div class="space-y-2.5">
+                      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <div class="flex items-center gap-2">
+                          <div class="flex h-7 w-7 items-center justify-center rounded-full bg-green-100">
+                            <img class="h-3 w-3" src="/assets/ui/download.svg" alt="" />
+                          </div>
+                          <div><p class="text-[10px] font-black">Payment received</p><p class="text-[9px] text-slate-500">INV-124 - +250.00 USDC</p></div>
+                        </div>
+                        <p class="text-[9px] text-slate-500">2m ago</p>
+                      </div>
+                      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <div class="flex items-center gap-2">
+                          <div class="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100">
+                            <img class="h-3 w-3" src="/assets/ui/file-text.svg" alt="" />
+                          </div>
+                          <div><p class="text-[10px] font-black">Invoice paid</p><p class="text-[9px] text-slate-500">INV-123 - +180.00 USDC</p></div>
+                        </div>
+                        <p class="text-[9px] text-slate-500">15m ago</p>
+                      </div>
+                      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <div class="flex items-center gap-2">
+                          <div class="flex h-7 w-7 items-center justify-center rounded-full bg-green-100">
+                            <img class="h-3 w-3" src="/assets/ui/check.svg" alt="" />
+                          </div>
+                          <div><p class="text-[10px] font-black">Settlement complete</p><p class="text-[9px] text-slate-500">+310.00 USDC</p></div>
+                        </div>
+                        <p class="text-[9px] text-slate-500">1h ago</p>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                          <div class="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100">
+                            <img class="h-3 w-3" src="/assets/ui/file-text.svg" alt="" />
+                          </div>
+                          <div><p class="text-[10px] font-black">Invoice created</p><p class="text-[9px] text-slate-500">INV-122 - 150.00 USDC</p></div>
+                        </div>
+                        <p class="text-[9px] text-slate-500">2h ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRUST BAR -->
+      <section class="border-y border-slate-100 bg-slate-50">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-12 gap-y-4 px-6 py-6">
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Trusted Infrastructure Powered by</p>
+          <div class="flex items-center gap-2">
+            <img class="h-10 w-auto" src="/assets/brands/circle.svg" alt="Circle" />
+            <span class="text-2xl font-black tracking-tight text-slate-700">Circle</span>
+          </div>
+          <p class="text-sm font-medium text-slate-400">Regulated Stablecoin Infrastructure</p>
+          <div class="h-8 w-px bg-slate-200 hidden md:block"></div>
+          <div class="flex items-center gap-2">
+            <img class="h-10 w-10" src="/assets/brands/base.svg" alt="Base" />
+            <span class="text-2xl font-black tracking-tight text-brand-blue">Base</span>
+          </div>
+          <p class="text-sm font-medium text-slate-400">Built on Base, Ethereum L2</p>
+        </div>
+      </section>
+
+      <!-- PROBLEM -->
+      <section id="product" class="mx-auto max-w-7xl px-6 py-20">
+        <div class="grid gap-12 lg:grid-cols-[380px_1fr] lg:items-center">
+          <div>
+            <div class="inline-flex rounded-full bg-red-50 px-4 py-2 text-sm font-bold text-red-500 mb-4">The Problem</div>
+            <h2 class="text-4xl font-black leading-tight tracking-tight">Cross-border payments shouldn't take days.</h2>
+            <p class="mt-5 text-base leading-7 text-slate-500">Traditional payment rails are slow, expensive, and opaque. AfriSettle was built to change that.</p>
+          </div>
+          <div class="grid gap-5 md:grid-cols-3">
+            <div class="feature-card rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+              <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100">
+                <img class="h-6 w-6" src="/assets/ui/clock.svg" alt="" />
+              </div>
+              <h3 class="text-base font-black">Slow Settlements</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-500">Bank transfers can take days or even weeks to clear, blocking your cash flow.</p>
+            </div>
+            <div class="feature-card rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+              <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100">
+                <img class="h-6 w-6" src="/assets/ui/circle-alert.svg" alt="" />
+              </div>
+              <h3 class="text-base font-black">High Costs</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-500">Hidden fees and poor FX rates eat into your revenue on every transaction.</p>
+            </div>
+            <div class="feature-card rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+              <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100">
+                <img class="h-6 w-6" src="/assets/ui/activity.svg" alt="" />
+              </div>
+              <h3 class="text-base font-black">Poor Visibility</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-500">Hard to track payments and reconciliations in real-time across borders.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section class="bg-slate-50 py-20">
+        <div class="mx-auto max-w-7xl px-6">
+          <div class="text-center mb-14">
+            <div class="inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-brand-blue mb-4">How It Works</div>
+            <h2 class="text-4xl font-black tracking-tight">How AfriSettle Works</h2>
+            <p class="mt-4 text-slate-500 text-lg">Simple. Fast. Built for modern African business.</p>
+          </div>
+          <div class="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
+            <div class="feature-card text-center rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div class="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-500/25">
+                <span class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-black text-blue-600 shadow-md">1</span>
+                <img class="h-7 w-7 brightness-0 invert" src="/assets/ui/file-text.svg" alt="" />
+              </div>
+              <h3 class="text-base font-black">Create Invoice</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-500">Generate professional USDC invoices in seconds with your business branding.</p>
+            </div>
+            <div class="feature-card text-center rounded-2xl border border-slate-200 bg-white p-8 shadow-sm relative">
+              <div class="hidden md:block absolute -left-3 top-1/2 -translate-y-1/2 z-10">
+                <img class="h-6 w-6" src="/assets/ui/arrow-right.svg" alt="" />
+              </div>
+              <div class="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500 shadow-lg shadow-green-500/25">
+                <span class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-black text-emerald-600 shadow-md">2</span>
+                <img class="h-7 w-7 brightness-0 invert" src="/assets/ui/link.svg" alt="" />
+              </div>
+              <h3 class="text-base font-black">Share Payment Link</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-500">Send a secure payment link or QR code directly to your customer.</p>
+            </div>
+            <div class="feature-card text-center rounded-2xl border border-slate-200 bg-white p-8 shadow-sm relative">
+              <div class="hidden md:block absolute -left-3 top-1/2 -translate-y-1/2 z-10">
+                <img class="h-6 w-6" src="/assets/ui/arrow-right.svg" alt="" />
+              </div>
+              <div class="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-500/25">
+                <span class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-xs font-black text-blue-600 shadow-md">3</span>
+                <img class="h-7 w-7 brightness-0 invert" src="/assets/ui/wallet.svg" alt="" />
+              </div>
+              <h3 class="text-base font-black">Receive & Settle USDC</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-500">Get paid in minutes and settle instantly to your Circle wallet on Base.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section id="features" class="mx-auto max-w-7xl px-6 py-20">
+        <div class="text-center mb-14">
+          <div class="inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-brand-blue mb-4">Features</div>
+          <h2 class="text-4xl font-black tracking-tight">Powerful features for<br />forward-thinking businesses</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div class="feature-card rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
+              <img class="h-6 w-6" src="/assets/ui/file-text.svg" alt="" />
+            </div>
+            <h3 class="font-black">Invoice Management</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-500">Create, send, and manage professional USDC invoices with full lifecycle tracking.</p>
+          </div>
+          <div class="feature-card rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50">
+              <img class="h-6 w-6" src="/assets/ui/wallet.svg" alt="" />
+            </div>
+            <h3 class="font-black">Circle Wallet Infrastructure</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-500">Circle Wallet Infrastructure powered by Circle on Base.</p>
+          </div>
+          <div class="feature-card rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-50">
+              <img class="h-6 w-6" src="/assets/ui/activity.svg" alt="" />
+            </div>
+            <h3 class="font-black">Live Settlement Tracking</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-500">Track every payment from invoice creation to final settlement with full transparency.</p>
+          </div>
+          <div class="feature-card rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50">
+              <img class="h-6 w-6" src="/assets/ui/bar-chart-3.svg" alt="" />
+            </div>
+            <h3 class="font-black">Merchant Analytics</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-500">Actionable insights to help you understand cash flow and grow your business.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY CIRCLE & BASE -->
+      <section class="bg-[#0F172A] py-20">
+        <div class="mx-auto max-w-7xl px-6">
+          <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div>
+              <div class="inline-flex rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm font-bold text-blue-400 mb-6">Why Circle & Base?</div>
+              <h2 class="text-4xl font-black text-white leading-tight tracking-tight">Built on infrastructure<br />you can trust</h2>
+              <p class="mt-5 text-slate-400 text-base leading-7">AfriSettle is built on regulated, transparent, and scalable infrastructure designed for the next generation of financial applications.</p>
+              <div class="mt-8 space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-green flex-shrink-0">
+                    <img class="h-3 w-3 brightness-0 invert" src="/assets/ui/check.svg" alt="" />
+                  </div>
+                  <p class="text-slate-300 text-sm font-medium">USDC issued by Circle, a global financial leader</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-green flex-shrink-0">
+                    <img class="h-3 w-3 brightness-0 invert" src="/assets/ui/check.svg" alt="" />
+                  </div>
+                  <p class="text-slate-300 text-sm font-medium">Built on Base, Ethereum's secure Layer 2 network</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-green flex-shrink-0">
+                    <img class="h-3 w-3 brightness-0 invert" src="/assets/ui/check.svg" alt="" />
+                  </div>
+                  <p class="text-slate-300 text-sm font-medium">Compliance-first infrastructure for peace of mind</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-green flex-shrink-0">
+                    <img class="h-3 w-3 brightness-0 invert" src="/assets/ui/check.svg" alt="" />
+                  </div>
+                  <p class="text-slate-300 text-sm font-medium">Enterprise-grade security and reliability</p>
+                </div>
+              </div>
+            </div>
+            <div class="grid gap-5 md:grid-cols-3">
+              <div class="feature-card rounded-2xl border border-white/10 bg-white/5 p-6 text-white md:col-span-3">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue">
+                    <img class="h-4.5 w-4.5 brightness-0 invert" src="/assets/ui/activity.svg" alt="" />
+                  </div>
+                  <h3 class="font-black">Faster Settlement</h3>
+                </div>
+                <p class="text-sm text-slate-400 leading-6">Receive USDC payments in minutes instead of waiting days for bank transfers to clear.</p>
+              </div>
+              <div class="feature-card rounded-2xl border border-white/10 bg-white/5 p-6 text-white md:col-span-3/2">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green">
+                    <img class="h-4.5 w-4.5 brightness-0 invert" src="/assets/ui/link.svg" alt="" />
+                  </div>
+                  <h3 class="font-black">Cross-Border Ready</h3>
+                </div>
+                <p class="text-sm text-slate-400 leading-6">Built for businesses trading across Africa with modern stablecoin infrastructure.</p>
+              </div>
+              <div class="feature-card rounded-2xl border border-white/10 bg-white/5 p-6 text-white">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-600">
+                    <img class="h-4.5 w-4.5 brightness-0 invert" src="/assets/ui/shield-check.svg" alt="" />
+                  </div>
+                  <h3 class="font-black">Transparent by Design</h3>
+                </div>
+                <p class="text-sm text-slate-400 leading-6">Track every payment from invoice creation to final settlement with complete visibility.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRODUCT PREVIEW -->
+      <section class="mx-auto max-w-7xl px-6 py-20">
+        <div class="text-center mb-14">
+          <div class="inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-brand-blue mb-4">Product Preview</div>
+          <h2 class="text-4xl font-black tracking-tight">See AfriSettle in action</h2>
+          <p class="mt-4 text-slate-500 text-lg">A platform designed to make stablecoin payments simple.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-5">
+          <div class="screen-card col-span-2 md:col-span-2 rounded-2xl border-2 border-brand-blue/20 bg-slate-50 overflow-hidden shadow-lg">
+            <div class="bg-[#0F172A] px-4 py-2 flex items-center gap-2">
+              <div class="flex gap-1.5"><div class="h-2.5 w-2.5 rounded-full bg-red-400"></div><div class="h-2.5 w-2.5 rounded-full bg-yellow-400"></div><div class="h-2.5 w-2.5 rounded-full bg-green-400"></div></div>
+              <span class="text-xs text-slate-400 font-medium">Dashboard</span>
+            </div>
+            <div class="p-4 min-h-36 bg-[#f8faff]">
+              <p class="text-xs font-black text-[#0F172A] mb-3">Business Pulse</p>
+              <div class="grid grid-cols-2 gap-2 mb-3">
+                <div class="rounded-lg border border-slate-200 bg-white p-2"><p class="text-[9px] text-slate-500">Today's Volume</p><p class="text-sm font-black text-[#0F172A]">$18,420</p></div>
+                <div class="rounded-lg border border-slate-200 bg-white p-2"><p class="text-[9px] text-slate-500">Paid Today</p><p class="text-sm font-black text-brand-green">18</p></div>
+              </div>
+              <div class="rounded-lg border border-slate-200 bg-white p-2">
+                <p class="text-[9px] font-black mb-1">Live Activity</p>
+                <div class="flex items-center justify-between"><p class="text-[9px] text-slate-500">Payment received</p><p class="text-[9px] font-bold text-brand-green">+20 USDC</p></div>
+                <div class="flex items-center justify-between"><p class="text-[9px] text-slate-500">Invoice INV-110 paid</p><p class="text-[9px] font-bold text-brand-green">+120 USDC</p></div>
+              </div>
+            </div>
+            <p class="text-center text-xs font-bold text-slate-500 py-2 border-t border-slate-100">Dashboard - Overview at a glance</p>
+          </div>
+          <div class="screen-card rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden shadow-md">
+            <div class="bg-slate-800 px-3 py-1.5 flex items-center gap-1.5"><div class="flex gap-1"><div class="h-2 w-2 rounded-full bg-red-400"></div><div class="h-2 w-2 rounded-full bg-yellow-400"></div></div></div>
+            <div class="p-3 min-h-32">
+              <p class="text-[10px] font-black mb-2">Payments</p>
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between rounded-lg border border-slate-100 bg-white p-2"><p class="text-[9px]">INV-110</p><span class="text-[8px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">Confirmed</span></div>
+                <div class="flex items-center justify-between rounded-lg border border-slate-100 bg-white p-2"><p class="text-[9px]">INV-109</p><span class="text-[8px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">Detected</span></div>
+                <div class="flex items-center justify-between rounded-lg border border-slate-100 bg-white p-2"><p class="text-[9px]">INV-108</p><span class="text-[8px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">Confirmed</span></div>
+              </div>
+            </div>
+            <p class="text-center text-[10px] font-bold text-slate-500 py-2 border-t border-slate-100">Payments</p>
+          </div>
+          <div class="screen-card rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden shadow-md">
+            <div class="bg-slate-800 px-3 py-1.5 flex items-center gap-1.5"><div class="flex gap-1"><div class="h-2 w-2 rounded-full bg-red-400"></div><div class="h-2 w-2 rounded-full bg-yellow-400"></div></div></div>
+            <div class="p-3 min-h-32">
+              <p class="text-[10px] font-black mb-2">Wallet</p>
+              <div class="rounded-lg border border-slate-100 bg-white p-2 mb-2">
+                <p class="text-[8px] text-slate-400">Total Balance</p>
+                <p class="text-sm font-black text-brand-blue">2,450 USDC</p>
+                <p class="text-[8px] text-brand-green">Up 8.24% this week</p>
+              </div>
+              <div class="rounded-lg border border-slate-100 bg-white p-2">
+                <p class="text-[8px] text-slate-400">Settlement Rate</p>
+                <p class="text-sm font-black text-brand-green">98.4%</p>
+              </div>
+            </div>
+            <p class="text-center text-[10px] font-bold text-slate-500 py-2 border-t border-slate-100">Wallets</p>
+          </div>
+          <div class="screen-card rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden shadow-md">
+            <div class="bg-slate-800 px-3 py-1.5 flex items-center gap-1.5"><div class="flex gap-1"><div class="h-2 w-2 rounded-full bg-red-400"></div><div class="h-2 w-2 rounded-full bg-yellow-400"></div></div></div>
+            <div class="p-3 min-h-32">
+              <div class="flex items-center justify-between mb-2"><p class="text-[10px] font-black">INV-110</p><span class="text-[8px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">PAID</span></div>
+              <p class="text-sm font-black text-brand-blue mb-2">250.00 USDC</p>
+              <div class="space-y-1">
+                <div class="flex items-center gap-1"><div class="h-3 w-3 rounded-full bg-brand-green flex items-center justify-center"><img class="h-1.5 w-1.5 brightness-0 invert" src="/assets/ui/check.svg" alt="" /></div><p class="text-[8px] text-slate-500">Payment Detected</p></div>
+                <div class="flex items-center gap-1"><div class="h-3 w-3 rounded-full bg-brand-green flex items-center justify-center"><img class="h-1.5 w-1.5 brightness-0 invert" src="/assets/ui/check.svg" alt="" /></div><p class="text-[8px] text-slate-500">Confirmed on Chain</p></div>
+                <div class="flex items-center gap-1"><div class="h-3 w-3 rounded-full bg-brand-green flex items-center justify-center"><img class="h-1.5 w-1.5 brightness-0 invert" src="/assets/ui/check.svg" alt="" /></div><p class="text-[8px] text-slate-500">Marked as Paid</p></div>
+              </div>
+            </div>
+            <p class="text-center text-[10px] font-bold text-slate-500 py-2 border-t border-slate-100">Invoice Detail</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRUST METRICS -->
+      <section class="bg-slate-50 py-16">
+        <div class="mx-auto max-w-7xl px-6">
+          <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+            <div class="text-center">
+              <p class="text-4xl font-black text-brand-blue">99.9%</p>
+              <p class="mt-2 text-sm font-semibold text-slate-500">System Availability</p>
+            </div>
+            <div class="text-center">
+              <p class="text-4xl font-black text-brand-green">USDC</p>
+              <p class="mt-2 text-sm font-semibold text-slate-500">Native Payments</p>
+            </div>
+            <div class="text-center">
+              <p class="text-4xl font-black text-brand-blue">Base</p>
+              <p class="mt-2 text-sm font-semibold text-slate-500">Network Settlement</p>
+            </div>
+            <div class="text-center">
+              <p class="text-4xl font-black text-[#0F172A]">Circle</p>
+              <p class="mt-2 text-sm font-semibold text-slate-500">Regulated Infrastructure</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FINAL CTA -->
+      <section class="mx-auto max-w-7xl px-6 pb-20">
+        <div class="cta-bg relative overflow-hidden rounded-3xl px-12 py-16 text-white">
+          <div class="relative text-center">
+            <h2 class="text-5xl font-black tracking-tight">Built for Africa.<br />Powered by Trust.</h2>
+            <p class="mt-5 mx-auto max-w-xl text-slate-300 text-lg">Join the next generation of businesses using stablecoin infrastructure to move money faster, cheaper, and smarter.</p>
+            <div class="mt-10 flex flex-wrap gap-4 justify-center">
+              <a class="inline-flex items-center gap-2 rounded-xl bg-brand-blue px-10 py-4 font-bold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-600 transition-colors" href="/dashboard">
+                Launch Dashboard
+                <img class="h-4 w-4 brightness-0 invert" src="/assets/ui/arrow-right.svg" alt="" />
+              </a>
+              <a class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-10 py-4 font-bold text-white hover:bg-white/20 transition-colors" href="#">
+                <img class="h-4 w-4 brightness-0 invert" src="/assets/social/github.svg" alt="" />
+                View on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-100 bg-white">
+      <div class="mx-auto max-w-7xl px-6 py-14">
+        <div class="grid gap-10 md:grid-cols-[1.8fr_repeat(4,1fr)]">
+          <div>
+            <img class="h-12 w-44 object-contain object-left" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
+            <p class="mt-4 max-w-xs text-sm leading-6 text-slate-500">The stablecoin payment layer for African businesses. Fast, secure, and transparent.</p>
+            <div class="mt-5 flex items-center gap-3">
+              <a class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white transition-colors hover:border-brand-blue" href="#" aria-label="AfriSettle on X">
+                <img class="h-4 w-4 opacity-100" src="/assets/social/x.svg" alt="" />
+              </a>
+              <a class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white transition-colors hover:border-brand-blue" href="#" aria-label="AfriSettle on LinkedIn">
+                <img class="h-4 w-4 opacity-100" src="/assets/social/linkedin.svg" alt="" />
+              </a>
+              <a class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white transition-colors hover:border-brand-blue" href="#" aria-label="AfriSettle on GitHub">
+                <img class="h-4 w-4 opacity-100" src="/assets/social/github.svg" alt="" />
+              </a>
+            </div>
+            <div class="mt-6 flex items-center gap-3">
+              <span class="text-xs font-bold text-slate-400">Built with</span>
+              <div class="flex items-center gap-1.5">
+                <img class="h-6 w-auto" src="/assets/brands/circle.svg" alt="Circle" />
+                <span class="text-sm font-black text-slate-700">Circle</span>
+              </div>
+              <span class="text-slate-300">+</span>
+              <div class="flex items-center gap-1.5">
+                <img class="h-6 w-6" src="/assets/brands/base.svg" alt="Base" />
+                <span class="text-sm font-black text-brand-blue">Base</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-black text-[#0F172A] mb-4">Product</p>
+            <div class="space-y-3 text-sm text-slate-500">
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Features</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Invoices</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Payments</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Wallets</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Security</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Roadmap</p>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-black text-[#0F172A] mb-4">Resources</p>
+            <div class="space-y-3 text-sm text-slate-500">
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Documentation</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Guides</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Help Center</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">API Reference</p>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-black text-[#0F172A] mb-4">Developers</p>
+            <div class="space-y-3 text-sm text-slate-500">
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">API</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Webhooks</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Status</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Changelog</p>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-black text-[#0F172A] mb-4">Company</p>
+            <div class="space-y-3 text-sm text-slate-500">
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">About Us</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Blog</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Careers</p>
+              <p class="hover:text-brand-blue cursor-pointer transition-colors">Contact</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-100 pt-8 md:flex-row">
+          <p class="text-sm text-slate-400">&copy; 2026 AfriSettle. All rights reserved.</p>
+          <div class="flex items-center gap-6 text-sm text-slate-400">
+            <span class="hover:text-brand-blue cursor-pointer transition-colors">Privacy Policy</span>
+            <span class="hover:text-brand-blue cursor-pointer transition-colors">Terms of Service</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+

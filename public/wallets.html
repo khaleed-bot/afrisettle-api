@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wallets | AfriSettle</title>
+    <link rel="icon" href="/assets/logo/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-[#f8fafc] text-[#07172f] antialiased">
+    <div class="min-h-screen lg:flex">
+      <aside class="border-r border-slate-200 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-[286px] lg:flex-col">
+        <div class="flex h-[106px] items-center px-7">
+          <img class="h-11 w-auto" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
+        </div>
+        <nav class="space-y-3 px-5 text-[17px] font-semibold text-slate-600">
+          <a class="flex items-center gap-4 rounded-xl px-5 py-4 hover:bg-slate-50" href="/dashboard"><span class="w-5 text-center">D</span>Dashboard</a>
+          <a class="flex items-center gap-4 rounded-xl px-5 py-4 hover:bg-slate-50" href="/invoices"><span class="w-5 text-center">I</span>Invoices</a>
+          <a class="flex items-center gap-4 rounded-xl px-5 py-4 hover:bg-slate-50" href="/payments"><span class="w-5 text-center">P</span>Payments</a>
+          <a class="flex items-center gap-4 rounded-xl bg-blue-50 px-5 py-4 font-black text-[#1557ff] shadow-[inset_4px_0_0_#1557ff]" href="/wallets"><span class="w-5 text-center">W</span>Wallets</a>
+          <a class="flex items-center gap-4 rounded-xl px-5 py-4 hover:bg-slate-50" href="/dashboard#analytics"><span class="w-5 text-center">A</span>Analytics</a>
+          <a class="flex items-center gap-4 rounded-xl px-5 py-4 hover:bg-slate-50" href="/settings"><span class="w-5 text-center">S</span>Settings</a>
+        </nav>
+        <div class="mx-5 mt-auto rounded-xl border border-slate-200 bg-white p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1557ff] text-sm font-black text-white">MA</div>
+            <div><p class="text-xs text-slate-500">Merchant Account</p><p class="font-black">Acme Stores Ltd</p></div>
+          </div>
+        </div>
+        <div class="m-5 rounded-xl bg-blue-50 p-4 text-[#1557ff]">
+          <p class="font-black">Need help?</p>
+          <p class="mt-1 text-sm">Contact support</p>
+        </div>
+      </aside>
+
+      <main class="min-w-0 flex-1 lg:ml-[286px]">
+        <header class="flex min-h-[106px] items-center justify-between px-8">
+          <div>
+            <h1 class="text-[42px] font-black tracking-[-0.03em]">Wallets</h1>
+            <p class="mt-2 text-lg text-slate-600">Manage your USDC settlement wallets.</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <button class="h-12 rounded-xl bg-[#1557ff] px-7 text-base font-black text-white shadow-lg shadow-blue-700/20" type="button">Receive</button>
+            <button class="h-12 rounded-xl border border-emerald-200 bg-emerald-50 px-7 text-base font-black text-emerald-700" type="button">Send</button>
+            <button class="h-12 rounded-xl border border-slate-200 bg-white px-7 text-base font-black" type="button">Export</button>
+          </div>
+        </header>
+
+        <div class="space-y-5 px-8 pb-8">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex flex-wrap gap-4">
+              <button class="flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-white px-6 text-base font-black shadow-sm" type="button"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-[#1557ff] text-white">-</span>Main Wallet <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-[#1557ff]">PRIMARY</span></button>
+              <button class="h-12 rounded-xl border border-blue-300 bg-white px-8 text-base font-black text-[#1557ff]" type="button">+ Add Wallet</button>
+            </div>
+          </div>
+
+          <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div class="flex items-center gap-5"><div class="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-2xl font-black text-[#1557ff]">W</div><div><p class="text-slate-500">Total Balance</p><p class="mt-2 text-3xl font-black">2,450.00 <span class="text-base">USDC</span></p><p class="mt-1 text-slate-600">= $2,450.00 USD</p></div></div></div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div class="flex items-center gap-5"><div class="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-2xl font-black text-emerald-600">A</div><div><p class="text-slate-500">Available</p><p class="mt-2 text-3xl font-black">2,350.00 <span class="text-base">USDC</span></p><p class="mt-1 text-slate-600">Ready to use</p></div></div></div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div class="flex items-center gap-5"><div class="flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-2xl font-black text-amber-600">T</div><div><p class="text-slate-500">In Settlement</p><p class="mt-2 text-3xl font-black">100.00 <span class="text-base">USDC</span></p><p class="mt-1 text-slate-600">Awaiting confirmation</p></div></div></div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div class="flex items-center gap-5"><div class="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-2xl font-black text-indigo-600">B</div><div><p class="text-slate-500">Network</p><p class="mt-2 text-3xl font-black">Base</p><p class="mt-1 text-slate-600">Powered by Circle</p></div></div></div>
+          </section>
+
+          <section class="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_260px]">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p class="inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-black text-[#1557ff]">PRIMARY SETTLEMENT WALLET</p>
+              <p class="mt-7 break-all text-2xl font-black">0x8f3a...e56f79gh9i01kl23m4n5o6p7</p>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <button class="rounded-xl border border-slate-200 px-6 py-3 font-black" type="button">Copy</button>
+                <button class="rounded-xl border border-slate-200 px-6 py-3 font-black" type="button">Explorer</button>
+                <button class="rounded-xl border border-blue-300 px-6 py-3 font-black text-[#1557ff]" type="button">QR Code</button>
+              </div>
+              <div class="mt-7 grid grid-cols-3 border-t border-slate-200 pt-6 text-sm">
+                <div><p class="text-slate-500">Network</p><p class="mt-2 font-black">Base</p></div>
+                <div><p class="text-slate-500">Provider</p><p class="mt-2 font-black">Circle</p></div>
+                <div><p class="text-slate-500">Status</p><p class="mt-2 font-black text-emerald-600">Active</p></div>
+              </div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div class="flex items-center justify-between"><h2 class="text-lg font-black">7-Day Balance Trend</h2><span class="rounded-lg border border-slate-200 px-3 py-2 text-sm font-black">USDC</span></div>
+              <div class="mt-5 h-[210px] rounded-xl bg-gradient-to-b from-blue-50 to-white p-4">
+                <svg class="h-full w-full" viewBox="0 0 500 210" preserveAspectRatio="none"><line x1="20" x2="480" y1="35" y2="35" stroke="#e5eaf2"/><line x1="20" x2="480" y1="75" y2="75" stroke="#e5eaf2"/><line x1="20" x2="480" y1="115" y2="115" stroke="#e5eaf2"/><line x1="20" x2="480" y1="155" y2="155" stroke="#e5eaf2"/><polyline points="25,150 95,105 165,88 235,78 305,105 375,75 470,72" fill="none" stroke="#1557ff" stroke-width="4" stroke-linecap="round"/><polyline points="25,150 95,105 165,88 235,78 305,105 375,75 470,72 470,180 25,180" fill="#1557ff" opacity=".08"/></svg>
+              </div>
+            </div>
+            <aside class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 class="text-lg font-black">Wallet Summary</h2>
+              <div class="mt-5 space-y-6 border-t border-slate-200 pt-6">
+                <div><p class="text-sm text-slate-500">Total Received</p><p class="mt-1 text-2xl font-black">5,820.00 <span class="text-sm">USDC</span></p></div>
+                <div><p class="text-sm text-slate-500">Total Settled</p><p class="mt-1 text-2xl font-black">5,720.00 <span class="text-sm">USDC</span></p></div>
+                <div><p class="text-sm text-slate-500">Settlement Rate</p><p class="mt-1 text-2xl font-black">98.4%</p></div>
+                <div><p class="text-sm text-slate-500">Last Settlement</p><p class="mt-1 text-2xl font-black">2 min ago</p></div>
+              </div>
+            </aside>
+          </section>
+
+          <section class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 class="text-lg font-black">Saved Wallets</h2>
+              <div id="loading-state" class="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-semibold text-slate-600">Loading wallets...</div>
+              <div id="list-error" class="hidden mt-4 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-bold text-red-700"></div>
+              <div id="success-state" class="hidden mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-700"></div>
+              <div id="empty-state" class="hidden mt-4 rounded-xl border border-dashed border-slate-200 bg-white px-5 py-14 text-center"><p class="font-black">No wallets yet</p><p class="mt-1 text-sm text-slate-500">Add a wallet to begin building your directory.</p></div>
+              <div id="wallet-list" class="hidden mt-4 space-y-3"></div>
+            </div>
+
+            <aside class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 id="form-title" class="text-lg font-black">Add Wallet</h2>
+              <form id="wallet-form" class="mt-5 space-y-4">
+                <div id="form-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700"></div>
+                <input id="wallet-id" type="hidden" />
+                <label class="block"><span class="text-sm font-bold text-slate-600">Label</span><input id="wallet-label" class="mt-2 h-11 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" required placeholder="Primary USDC Wallet" /></label>
+                <label class="block"><span class="text-sm font-bold text-slate-600">Address</span><input id="wallet-address" class="mt-2 h-11 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" required placeholder="0x..." /></label>
+                <div class="grid gap-3 sm:grid-cols-2"><label class="block"><span class="text-sm font-bold text-slate-600">Network</span><input id="wallet-network" class="mt-2 h-11 w-full rounded-xl border border-slate-200 px-4 text-sm" value="ETHEREUM" /></label><label class="block"><span class="text-sm font-bold text-slate-600">Stablecoin</span><input id="wallet-stablecoin" class="mt-2 h-11 w-full rounded-xl border border-slate-200 px-4 text-sm" value="USDC" /></label></div>
+                <label class="flex items-center gap-3 rounded-xl bg-slate-50 p-4 text-sm font-bold"><input id="wallet-default" class="h-4 w-4" type="checkbox" /> Set as default wallet</label>
+                <div class="flex gap-3"><button id="submit-button" class="h-11 flex-1 rounded-xl bg-[#1557ff] text-sm font-black text-white">Add Wallet</button><button id="cancel-button" class="hidden h-11 rounded-xl border border-slate-200 px-5 text-sm font-black" type="button">Cancel</button></div>
+              </form>
+            </aside>
+          </section>
+
+          <footer class="py-4 text-center text-lg text-slate-500"><img class="mx-auto mb-2 h-8 w-auto" src="/assets/logo/afrisettle-symbol.png" alt="" />Secured by Circle &middot; Built on Base &middot; Stablecoin Infrastructure</footer>
+        </div>
+      </main>
+    </div>
+    <script src="/wallets.js"></script>
+  </body>
+</html>

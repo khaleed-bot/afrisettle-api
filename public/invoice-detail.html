@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Invoice Detail | AfriSettle</title>
+    <link rel="icon" href="/assets/logo/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-[#f7f9fc] text-[#07182f]">
+    <div class="min-h-screen lg:flex">
+      <aside class="bg-[#06172d] text-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-72 lg:flex-col">
+        <div class="flex h-24 items-center px-7"><img class="h-12 w-auto" src="/assets/logo/afrisettle-light.png" alt="AfriSettle" /></div>
+        <div class="mx-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4"><p class="text-sm font-black">Lagos Digital Hub</p><p class="mt-1 w-fit rounded-full bg-emerald-400/10 px-2 py-1 text-xs font-black text-emerald-300">Verified Merchant</p></div>
+        <nav class="mt-8 space-y-2 px-5">
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/dashboard">Dashboard</a>
+          <a class="block rounded-2xl bg-[#1557ff] px-4 py-3 text-sm font-black" href="/invoices">Invoices</a>
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/payments">Payments</a>
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/wallets">Wallets</a>
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/dashboard#analytics">Analytics</a>
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/settings">Settings</a>
+        </nav>
+      </aside>
+      <main class="flex-1 lg:ml-72">
+        <header class="border-b border-slate-200 bg-white">
+          <div class="flex flex-col gap-4 px-5 py-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+            <input id="api-key-input" class="h-12 max-w-xl rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" type="password" placeholder="Merchant API key" />
+            <a class="inline-flex h-12 items-center rounded-xl bg-[#1557ff] px-5 text-sm font-black text-white" href="/create-invoice">+ Create Invoice</a>
+          </div>
+        </header>
+        <div class="space-y-6 px-5 py-6 lg:px-8">
+          <a class="font-black text-[#1557ff]" href="/invoices">&larr; Back to Invoices</a>
+          <div id="loading-state" class="rounded-2xl border border-slate-200 bg-white p-4 text-sm font-semibold text-slate-600">Loading invoice...</div>
+          <div id="message" class="hidden rounded-2xl border px-4 py-3 text-sm font-bold"></div>
+          <section id="content" class="hidden grid gap-5 xl:grid-cols-[minmax(0,1fr)_24rem]">
+            <div class="space-y-5">
+              <div class="rounded-2xl border border-slate-200 bg-white p-6">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <div class="flex flex-wrap items-center gap-3"><h1 id="invoice-number" class="text-3xl font-black">Invoice</h1><span id="invoice-status"></span></div>
+                    <p id="created-at" class="mt-2 text-sm text-slate-500"></p>
+                  </div>
+                  <div class="flex flex-wrap gap-3">
+                    <a id="public-link" class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black" href="#" target="_blank">Share Invoice</a>
+                    <button id="refresh-payment" class="rounded-xl bg-[#1557ff] px-4 py-3 text-sm font-black text-white">Refresh Payment</button>
+                  </div>
+                </div>
+                <div class="mt-6 grid gap-5 md:grid-cols-4">
+                  <div><p class="text-sm font-bold text-slate-500">Amount Due</p><p id="amount-due" class="mt-2 text-2xl font-black"></p></div>
+                  <div><p class="text-sm font-bold text-slate-500">Payment Status</p><p id="payment-badge" class="mt-2"></p></div>
+                  <div><p class="text-sm font-bold text-slate-500">Due Date</p><p id="due-date" class="mt-2 font-black"></p></div>
+                  <div><p class="text-sm font-bold text-slate-500">Paid Date</p><p id="paid-date" class="mt-2 font-black"></p></div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-white p-6">
+                <h2 class="text-lg font-black">Customer</h2>
+                <div class="mt-5 flex items-center gap-4"><div id="customer-avatar" class="flex h-14 w-14 items-center justify-center rounded-full bg-purple-100 font-black text-purple-700">C</div><div><p id="customer-name" class="font-black"></p><p id="customer-email" class="text-sm text-slate-500"></p></div></div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-white p-6">
+                <h2 class="text-lg font-black">Payment Instructions</h2>
+                <div class="mt-5 grid gap-4 md:grid-cols-3"><div><p class="text-sm font-bold text-slate-500">Stablecoin</p><p id="stablecoin" class="mt-1 font-black"></p></div><div><p class="text-sm font-bold text-slate-500">Network</p><p id="network" class="mt-1 font-black"></p></div><div><p class="text-sm font-bold text-slate-500">Circle Wallet</p><p id="circle-wallet-state" class="mt-1 font-black"></p></div></div>
+                <div class="mt-5 rounded-2xl bg-slate-50 p-4"><p class="text-sm font-bold text-slate-500">Deposit Address</p><p id="deposit-address" class="mt-2 break-all font-black"></p></div>
+                <div class="mt-4 flex flex-wrap gap-3">
+                  <button id="copy-address" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-black">Copy Address</button>
+                  <button id="create-deposit" class="rounded-xl bg-[#06172d] px-4 py-3 text-sm font-black text-white">Create Circle Deposit Address</button>
+                  <button id="refresh-deposit" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-black">Refresh Circle Address</button>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-white p-6">
+                <h2 class="text-lg font-black">Wallet Assignment</h2>
+                <p id="current-wallet" class="mt-2 break-all text-sm text-slate-600">No wallet assigned</p>
+                <div class="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+                  <select id="wallet-select" class="h-11 rounded-xl border border-slate-200 px-4 text-sm font-bold"><option value="">Select saved wallet</option></select>
+                  <input id="wallet-input" class="h-11 rounded-xl border border-slate-200 px-4 text-sm" placeholder="Manual wallet address" />
+                  <button id="assign-wallet" class="h-11 rounded-xl bg-[#1557ff] px-5 text-sm font-black text-white">Assign Wallet</button>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-white p-6">
+                <h2 class="text-lg font-black">Payments</h2>
+                <div id="payments-list" class="mt-4 space-y-3"></div>
+                <div id="payments-empty" class="hidden mt-4 rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">No payments linked yet.</div>
+              </div>
+            </div>
+            <aside class="space-y-5">
+              <div class="rounded-2xl border border-slate-200 bg-white p-6">
+                <h2 class="text-lg font-black">Invoice Timeline</h2>
+                <div id="timeline-list" class="mt-5 space-y-4"></div>
+                <div id="timeline-empty" class="hidden mt-4 rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">No timeline events yet.</div>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-6">
+                <h2 class="text-lg font-black">Actions</h2>
+                <div id="status-actions" class="mt-4 space-y-3"></div>
+              </div>
+            </aside>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script src="/invoice-detail.js"></script>
+  </body>
+</html>

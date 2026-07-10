@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Invoices | AfriSettle</title>
+    <link rel="icon" href="/assets/logo/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-[#f7f9fc] text-[#07182f]">
+    <div class="min-h-screen lg:flex">
+      <aside class="bg-[#06172d] text-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-72 lg:flex-col">
+        <div class="flex h-24 items-center px-7"><img class="h-12 w-auto" src="/assets/logo/afrisettle-light.png" alt="AfriSettle" /></div>
+        <div class="mx-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4">
+          <p class="text-sm font-black">Lagos Digital Hub</p><p class="mt-1 w-fit rounded-full bg-emerald-400/10 px-2 py-1 text-xs font-black text-emerald-300">Verified Merchant</p>
+        </div>
+        <nav class="mt-8 space-y-2 px-5">
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/dashboard">Dashboard</a>
+          <a class="block rounded-2xl bg-[#1557ff] px-4 py-3 text-sm font-black" href="/invoices">Invoices</a>
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/payments">Payments</a>
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/wallets">Wallets</a>
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/dashboard#analytics">Analytics</a>
+          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/settings">Settings</a>
+        </nav>
+      </aside>
+      <main class="flex-1 lg:ml-72">
+        <header class="border-b border-slate-200 bg-white">
+          <div class="flex flex-col gap-4 px-5 py-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+            <input id="api-key-input" class="h-12 max-w-xl rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" type="password" placeholder="Merchant API key" />
+            <a class="inline-flex h-12 items-center rounded-xl bg-[#1557ff] px-5 text-sm font-black text-white" href="/create-invoice">+ Create Invoice</a>
+          </div>
+        </header>
+        <div class="space-y-6 px-5 py-6 lg:px-8">
+          <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div><h1 class="text-3xl font-black">Invoices</h1><p class="mt-1 text-slate-600">Create, manage and track all invoices.</p></div>
+            <button id="export-button" class="h-11 rounded-xl border border-slate-200 bg-white px-5 text-sm font-black">Export</button>
+          </div>
+          <div id="message" class="hidden rounded-2xl border px-4 py-3 text-sm font-bold"></div>
+          <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-sm font-bold text-slate-500">Total Invoices</p><p id="total-invoices" class="mt-3 text-3xl font-black">0</p></div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-sm font-bold text-slate-500">Total Amount</p><p id="total-amount" class="mt-3 text-3xl font-black">0 USDC</p></div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-sm font-bold text-slate-500">Paid Invoices</p><p id="paid-invoices" class="mt-3 text-3xl font-black">0</p></div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-sm font-bold text-slate-500">Outstanding</p><p id="outstanding-invoices" class="mt-3 text-3xl font-black">0</p></div>
+          </section>
+          <section class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="grid gap-3 lg:grid-cols-[1fr_12rem_12rem]">
+              <input id="search-input" class="h-11 rounded-xl border border-slate-200 px-4 text-sm outline-none" placeholder="Search by invoice ID, customer or amount..." />
+              <select id="status-filter" class="h-11 rounded-xl border border-slate-200 px-4 text-sm font-bold"><option value="">All Status</option><option>DRAFT</option><option>UNPAID</option><option>PENDING</option><option>PAID</option></select>
+              <select id="sort-select" class="h-11 rounded-xl border border-slate-200 px-4 text-sm font-bold"><option value="newest">Newest First</option><option value="oldest">Oldest First</option><option value="high">Amount High to Low</option><option value="low">Amount Low to High</option></select>
+            </div>
+            <div id="loading-state" class="mt-5 rounded-xl bg-slate-50 p-4 text-sm font-semibold text-slate-600">Loading invoices...</div>
+            <div id="invoice-table" class="mt-5 overflow-hidden rounded-xl border border-slate-100"></div>
+            <div id="empty-state" class="hidden mt-5 rounded-xl border border-dashed border-slate-200 p-10 text-center text-sm text-slate-500">No invoices found.</div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script src="/invoices.js"></script>
+  </body>
+</html>

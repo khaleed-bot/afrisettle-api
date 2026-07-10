@@ -7,6 +7,164 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Merchant {
+  id                      String       @id @default(uuid())
+  businessName            String
+  email                   String       @unique
+  country                 String?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  apiKeyHash              String?      @unique
+  circleIntegrationStatus String?
+  circleMerchantWalletId  String?      @unique
+  circleWalletSetId       String?      @unique
+  invoices                Invoice[]
+  settlements             Settlement[]
+  wallets                 Wallet[]
+}
+
+model Wallet {
+  id         String   @id @default(uuid())
+  merchantId String
+  label      String
+  address    String
+  network    String   @default("ETHEREUM")
+  stablecoin String   @default("USDC")
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+
+  @@unique([merchantId, address])
+  @@index([merchantId])
+}
+
+model Invoice {
+  id                      String           @id @default(uuid())
+  merchantId              String
+  invoiceNumber           String           @unique
+  customerName            String
+  customerEmail           String
+  amount                  Decimal          @db.Decimal(18, 2)
+  currency                String           @default("USD")
+  stablecoin              String           @default("USDC")
+  walletAddress           String?
+  status                  InvoiceStatus    @default(DRAFT)
+  description             String?
+  dueDate                 DateTime?
+  paidAt                  DateTime?
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  circleCompletionContext String?
+  circleIdempotencyKey    String?          @unique
+  circleIntentStatus      String?
+  circlePaymentIntentId   String?          @unique
+  depositAddress          String?
+  depositAddressTag       String?
+  paymentChain            String?
+  paymentExpiresAt        DateTime?
+  merchant                Merchant         @relation(fields: [merchantId], references: [id])
+  payments                Payment[]
+  settlements             Settlement[]
+  transactionLogs         TransactionLog[]
+
+  @@index([merchantId])
+  @@index([status])
+  @@index([invoiceNumber])
+  @@index([circleIntentStatus])
+  @@index([depositAddress])
+}
+
+model Payment {
+  id               String          @id @default(uuid())
+  invoiceId        String
+  amountExpected   Decimal         @db.Decimal(18, 2)
+  amountReceived   Decimal?        @db.Decimal(18, 2)
+  stablecoin       String          @default("USDC")
+  walletAddress    String?
+  txHash           String?         @unique
+  status           PaymentStatus   @default(DETECTED)
+  detectedAt       DateTime        @default(now())
+  confirmedAt      DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  circlePaymentId  String?         @unique
+  fees             Decimal?        @db.Decimal(18, 2)
+  fromAddress      String?
+  paymentChain     String?
+  provider         PaymentProvider @default(MANUAL)
+  providerStatus   String?
+  settlementAmount Decimal?        @db.Decimal(18, 2)
+  invoice          Invoice         @relation(fields: [invoiceId], references: [id])
+  settlements      Settlement[]
+
+  @@index([invoiceId])
+  @@index([status])
+  @@index([txHash])
+  @@index([provider])
+  @@index([providerStatus])
+}
+
+model TransactionLog {
+  id        String         @id @default(uuid())
+  invoiceId String
+  action    String
+  oldStatus InvoiceStatus?
+  newStatus InvoiceStatus?
+  message   String?
+  metadata  Json?
+  createdAt DateTime       @default(now())
+  invoice   Invoice        @relation(fields: [invoiceId], references: [id])
+
+  @@index([invoiceId])
+  @@index([action])
+}
+
+model WebhookEvent {
+  id               String                  @id @default(uuid())
+  provider         PaymentProvider         @default(CIRCLE)
+  externalEventId  String                  @unique
+  notificationType String
+  payload          Json
+  status           WebhookProcessingStatus @default(RECEIVED)
+  attempts         Int                     @default(0)
+  error            String?
+  receivedAt       DateTime                @default(now())
+  processedAt      DateTime?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  @@index([provider, status])
+  @@index([notificationType])
+  @@index([receivedAt])
+}
+
+model Settlement {
+  id                   String           @id @default(uuid())
+  merchantId           String
+  invoiceId            String
+  paymentId            String?
+  provider             PaymentProvider  @default(CIRCLE)
+  providerSettlementId String?          @unique
+  grossAmount          Decimal          @db.Decimal(18, 2)
+  feeAmount            Decimal          @default(0) @db.Decimal(18, 2)
+  netAmount            Decimal          @db.Decimal(18, 2)
+  currency             String
+  status               SettlementStatus @default(NOT_STARTED)
+  settledAt            DateTime?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  invoice              Invoice          @relation(fields: [invoiceId], references: [id])
+  merchant             Merchant         @relation(fields: [merchantId], references: [id])
+  payment              Payment?         @relation(fields: [paymentId], references: [id])
+
+  @@index([merchantId])
+  @@index([invoiceId])
+  @@index([paymentId])
+  @@index([status])
+  @@index([provider, status])
+}
+
 enum InvoiceStatus {
   DRAFT
   UNPAID
@@ -20,73 +178,25 @@ enum PaymentStatus {
   FAILED
 }
 
-model Merchant {
-  id           String    @id @default(uuid())
-  businessName String
-  email        String    @unique
-  apiKeyHash   String?   @unique
-  country      String?
-  invoices     Invoice[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+enum PaymentProvider {
+  MANUAL
+  CIRCLE
 }
 
-model Invoice {
-  id              String           @id @default(uuid())
-  merchantId      String
-  merchant        Merchant         @relation(fields: [merchantId], references: [id])
-  invoiceNumber   String           @unique
-  customerName    String
-  customerEmail   String
-  amount          Decimal          @db.Decimal(18, 2)
-  currency        String           @default("USD")
-  stablecoin      String           @default("USDC")
-  walletAddress   String?
-  status          InvoiceStatus    @default(DRAFT)
-  description     String?
-  dueDate         DateTime?
-  paidAt          DateTime?
-  payments        Payment[]
-  transactionLogs TransactionLog[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-
-  @@index([merchantId])
-  @@index([status])
-  @@index([invoiceNumber])
+enum WebhookProcessingStatus {
+  RECEIVED
+  PROCESSING
+  PROCESSED
+  FAILED
 }
 
-model Payment {
-  id             String        @id @default(uuid())
-  invoiceId      String
-  invoice        Invoice       @relation(fields: [invoiceId], references: [id])
-  amountExpected Decimal       @db.Decimal(18, 2)
-  amountReceived Decimal?      @db.Decimal(18, 2)
-  stablecoin     String        @default("USDC")
-  walletAddress  String?
-  txHash         String?       @unique
-  status         PaymentStatus @default(DETECTED)
-  detectedAt     DateTime      @default(now())
-  confirmedAt    DateTime?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-
-  @@index([invoiceId])
-  @@index([status])
-  @@index([txHash])
-}
-
-model TransactionLog {
-  id        String         @id @default(uuid())
-  invoiceId String
-  invoice   Invoice        @relation(fields: [invoiceId], references: [id])
-  action    String
-  oldStatus InvoiceStatus?
-  newStatus InvoiceStatus?
-  message   String?
-  metadata  Json?
-  createdAt DateTime       @default(now())
-
-  @@index([invoiceId])
-  @@index([action])
+enum SettlementStatus {
+  NOT_STARTED
+  RECEIVED_BY_CIRCLE
+  PROCESSING
+  SETTLED
+  FAILED
+  HELD
+  REVERSED
+  REFUNDED
 }
