@@ -23,6 +23,7 @@ const {
 const {
   receiveCircleWebhook,
 } = require("./services/circleWebhookService");
+const CircleApiError = require("./errors/circleApiError");
 
 const SERVICE_VERSION = "1.0.0";
 
@@ -516,6 +517,114 @@ function serializeCircleWallet(wallet, walletSetId) {
     address: getCircleWalletAddress(wallet) || null,
     blockchain: getCircleWalletBlockchain(wallet) || null,
     state: wallet.state || wallet.status || null,
+  };
+}
+
+async function syncCircleWalletRecord(client, merchantId, wallet) {
+  const address = getCircleWalletAddress(wallet);
+
+  if (!address) {
+    return null;
+  }
+
+  const blockchain = getCircleWalletBlockchain(wallet) || getCircleConfig().defaultBlockchain;
+  const normalizedAddress = String(address);
+
+  await client.wallet.updateMany({
+    where: { merchantId },
+    data: { isDefault: false },
+  });
+
+  return client.wallet.upsert({
+    where: {
+      merchantId_address: {
+        merchantId,
+        address: normalizedAddress,
+      },
+    },
+    create: {
+      merchantId,
+      label: "Circle Merchant Wallet",
+      address: normalizedAddress,
+      network: String(blockchain).toUpperCase(),
+      stablecoin: "USDC",
+      isDefault: true,
+    },
+    update: {
+      label: "Circle Merchant Wallet",
+      network: String(blockchain).toUpperCase(),
+      stablecoin: "USDC",
+      isDefault: true,
+    },
+  });
+}
+
+async function getInvoicePaymentAddressData(merchant) {
+  if (merchant.circleMerchantWalletId) {
+    if (!circleClient.isConfigured()) {
+      throw new CircleApiError("Circle is not configured", {
+        code: "CIRCLE_NOT_CONFIGURED",
+        retryable: false,
+      });
+    }
+
+    const circleResponse = await circleClient.getWallet(
+      merchant.circleMerchantWalletId
+    );
+    const circleWallet = unwrapCircleWallet(circleResponse);
+
+    if (!circleWallet || !getCircleWalletId(circleWallet)) {
+      throw new CircleApiError("Circle returned an invalid wallet response", {
+        status: 502,
+        retryable: false,
+      });
+    }
+
+    const circleFields = getCircleWalletFields(circleWallet);
+
+    if (!circleFields.depositAddress) {
+      throw new CircleApiError("Circle wallet does not have a deposit address", {
+        status: 502,
+        retryable: false,
+      });
+    }
+
+    return {
+      data: {
+        ...circleFields,
+        walletAddress: circleFields.depositAddress,
+        stablecoin: "USDC",
+      },
+      circleWallet,
+      source: "CIRCLE",
+    };
+  }
+
+  const defaultWallet = await prisma.wallet.findFirst({
+    where: { merchantId: merchant.id },
+    orderBy: [
+      { isDefault: "desc" },
+      { createdAt: "desc" },
+    ],
+  });
+
+  if (!defaultWallet) {
+    return {
+      data: {},
+      circleWallet: null,
+      source: null,
+    };
+  }
+
+  return {
+    data: {
+      walletAddress: defaultWallet.address,
+      depositAddress: defaultWallet.address,
+      paymentChain: defaultWallet.network,
+      stablecoin: defaultWallet.stablecoin || "USDC",
+    },
+    circleWallet: null,
+    source: "WALLET",
   };
 }
 
@@ -1161,19 +1270,55 @@ app.post("/api/invoices", authenticateMerchant, async (req, res) => {
       });
     }
 
-    const invoice = await prisma.invoice.create({
-      data: {
-        merchantId: req.merchant.id,
-        invoiceNumber: normalizedInvoiceNumber,
-        customerName: normalizedCustomerName,
-        customerEmail: normalizedCustomerEmail,
-        amount: normalizedAmount,
-        currency: normalizedCurrency,
-        status: "DRAFT",
-        ...(normalizedDueDate ? { dueDate: normalizedDueDate } : {}),
-        ...(normalizedDescription ? { description: normalizedDescription } : {}),
-        ...(normalizedWalletAddress ? { walletAddress: normalizedWalletAddress } : {}),
-      },
+    const paymentAddress = await getInvoicePaymentAddressData(req.merchant);
+    const invoice = await prisma.$transaction(async (tx) => {
+      if (paymentAddress.circleWallet) {
+        await syncCircleWalletRecord(
+          tx,
+          req.merchant.id,
+          paymentAddress.circleWallet
+        );
+      }
+
+      const createdInvoice = await tx.invoice.create({
+        data: {
+          merchantId: req.merchant.id,
+          invoiceNumber: normalizedInvoiceNumber,
+          customerName: normalizedCustomerName,
+          customerEmail: normalizedCustomerEmail,
+          amount: normalizedAmount,
+          currency: normalizedCurrency,
+          status: "DRAFT",
+          ...(normalizedDueDate ? { dueDate: normalizedDueDate } : {}),
+          ...(normalizedDescription ? { description: normalizedDescription } : {}),
+          ...paymentAddress.data,
+          ...(normalizedWalletAddress
+            ? { walletAddress: normalizedWalletAddress }
+            : {}),
+        },
+      });
+
+      if (paymentAddress.source) {
+        await tx.transactionLog.create({
+          data: {
+            invoiceId: createdInvoice.id,
+            action:
+              paymentAddress.source === "CIRCLE"
+                ? "CIRCLE_DEPOSIT_ADDRESS_ASSIGNED"
+                : "WALLET_ASSIGNED",
+            message:
+              paymentAddress.source === "CIRCLE"
+                ? "Circle deposit address assigned to invoice"
+                : "Wallet assigned to invoice",
+            metadata: {
+              source: paymentAddress.source,
+              chain: createdInvoice.paymentChain || null,
+            },
+          },
+        });
+      }
+
+      return createdInvoice;
     });
 
     return res.status(201).json(invoice);
@@ -1182,6 +1327,12 @@ app.post("/api/invoices", authenticateMerchant, async (req, res) => {
       return res.status(409).json({
         error: "An invoice with this invoiceNumber already exists",
       });
+    }
+
+    if (error && error.name === "CircleApiError") {
+      const circleError = getCircleErrorResponse(error);
+
+      return res.status(circleError.status).json(circleError.body);
     }
 
     console.error("Failed to create invoice", error);
@@ -1315,6 +1466,7 @@ app.get("/api/public/invoices/:id/payment", async (req, res) => {
         paymentChain: true,
         depositAddress: true,
         depositAddressTag: true,
+        walletAddress: true,
         merchant: {
           select: {
             businessName: true,
@@ -1351,6 +1503,8 @@ app.get("/api/public/invoices/:id/payment", async (req, res) => {
           ? "Payment Detected"
           : "Awaiting Payment";
 
+    const paymentAddress = invoice.depositAddress || invoice.walletAddress || null;
+
     return res.status(200).json({
       invoiceNumber: invoice.invoiceNumber,
       merchant: {
@@ -1361,7 +1515,7 @@ app.get("/api/public/invoices/:id/payment", async (req, res) => {
       dueDate: invoice.dueDate,
       paymentStatus,
       chain: invoice.paymentChain,
-      depositAddress: invoice.depositAddress,
+      depositAddress: paymentAddress,
       depositAddressTag: invoice.depositAddressTag,
       txHash:
         confirmedPayment && confirmedPayment.txHash ? confirmedPayment.txHash : null,
@@ -1502,6 +1656,8 @@ app.post("/api/circle/wallet", authenticateMerchant, async (req, res) => {
         });
       }
 
+      await syncCircleWalletRecord(prisma, req.merchant.id, wallet);
+
       return res.status(200).json({
         ...serializeCircleWallet(wallet, req.merchant.circleWalletSetId),
         created: false,
@@ -1554,6 +1710,7 @@ app.post("/api/circle/wallet", authenticateMerchant, async (req, res) => {
         circleIntegrationStatus: "WALLET_CREATED",
       },
     });
+    await syncCircleWalletRecord(prisma, merchant.id, wallet);
 
     return res.status(201).json({
       ...serializeCircleWallet(wallet, walletSetId),
