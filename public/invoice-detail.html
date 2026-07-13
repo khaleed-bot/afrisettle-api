@@ -15,11 +15,11 @@
     </style>
   </head>
   <body class="bg-[#f8fafc] text-[#07182f] antialiased">
-    <div class="min-h-screen lg:flex">
-      <aside class="bg-[#06172d] text-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-[220px] lg:flex-col">
-        <div class="flex h-14 items-center px-4">
+    <div class="min-h-screen md:flex">
+      <aside class="hidden bg-[#06172d] text-white md:fixed md:inset-y-0 md:left-0 md:flex md:w-[220px] md:flex-col">
+        <a class="flex h-14 items-center px-4" href="/" aria-label="Back to AfriSettle website">
           <img class="h-8 w-36 object-contain object-left brightness-0 invert" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
-        </div>
+        </a>
 
         <div class="mx-4 rounded-[14px] border border-white/15 bg-white/[0.04] p-2.5 shadow-2xl shadow-black/10">
           <div class="flex items-center gap-2.5">
@@ -43,7 +43,9 @@
           <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/settings"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/settings.svg" alt="" />Settings</a>
         </nav>
 
-        <div class="mx-4 mt-auto rounded-[14px] border border-white/15 bg-white/[0.04] p-3">
+        <a class="mx-4 mt-auto flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/external-link.svg" alt="" />Back to website</a>
+
+        <div class="mx-4 mt-2 rounded-[14px] border border-white/15 bg-white/[0.04] p-3">
           <div class="mb-1.5 flex h-5 w-5 items-center justify-center rounded-md text-yellow-300">
             <img class="h-4 w-4" src="/assets/ui/star.svg" alt="" />
           </div>
@@ -62,7 +64,7 @@
         </div>
       </aside>
 
-      <main class="min-w-0 flex-1 overflow-x-hidden lg:ml-[220px]">
+      <main class="min-w-0 flex-1 overflow-x-hidden md:ml-[220px]">
         <header class="border-b border-slate-200 bg-white">
           <div class="flex min-h-14 flex-col gap-2 px-4 py-2 xl:h-14 xl:flex-row xl:items-center xl:justify-between">
             <div class="relative w-full max-w-[458px] flex-1">
@@ -281,6 +283,8 @@
         </div>
       </main>
     </div>
+    <script src="/mobile-nav.js"></script>
+
     <script src="/invoice-detail.js"></script>
   </body>
 </html>
