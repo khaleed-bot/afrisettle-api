@@ -4,93 +4,198 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Create Invoice | AfriSettle</title>
+    <link rel="icon" href="/assets/logo/favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html,
+      body {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+    </style>
   </head>
-  <body class="bg-slate-50 text-slate-950">
+  <body class="bg-[#f8fafc] text-[#07182f] antialiased">
     <div class="min-h-screen lg:flex">
-      <aside class="border-b border-slate-200 bg-white lg:w-72 lg:border-b-0 lg:border-r">
-        <div class="flex h-16 items-center gap-3 px-6">
-          <div class="flex h-9 w-9 items-center justify-center rounded bg-emerald-600 text-sm font-bold text-white">
-            AS
-          </div>
-          <div>
-            <p class="text-base font-semibold tracking-tight">AfriSettle</p>
-            <p class="text-xs text-slate-500">Merchant Console</p>
+      <aside class="bg-[#06172d] text-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-[220px] lg:flex-col">
+        <div class="flex h-14 items-center px-4">
+          <img class="h-8 w-36 object-contain object-left brightness-0 invert" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
+        </div>
+
+        <div class="mx-4 rounded-[14px] border border-white/15 bg-white/[0.04] p-2.5 shadow-2xl shadow-black/10">
+          <div class="flex items-center gap-2.5">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-400/15">
+              <img class="h-4 w-4 brightness-0 invert" src="/assets/ui/home.svg" alt="" />
+            </div>
+            <div class="min-w-0 flex-1">
+              <p id="merchant-name" class="truncate text-sm font-black">Merchant account</p>
+              <p class="mt-0.5 w-fit rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-black text-emerald-300">Verified Merchant</p>
+            </div>
+            <img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/chevron-down.svg" alt="" />
           </div>
         </div>
-        <nav class="flex gap-2 overflow-x-auto px-4 pb-4 lg:block lg:space-y-1 lg:overflow-visible lg:px-3">
-          <a class="block rounded px-3 py-2 text-sm font-medium text-slate-600" href="/dashboard">Dashboard</a>
-          <a class="block rounded bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700" href="/create-invoice">Create Invoice</a>
-          <a class="block rounded px-3 py-2 text-sm font-medium text-slate-600" href="#">Invoices</a>
-          <a class="block rounded px-3 py-2 text-sm font-medium text-slate-600" href="#">Payments</a>
-          <a class="block rounded px-3 py-2 text-sm font-medium text-slate-600" href="/wallets">Wallets</a>
-          <a class="block rounded px-3 py-2 text-sm font-medium text-slate-600" href="/settings">Settings</a>
+
+        <nav class="mt-4 space-y-1 px-4">
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/dashboard"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/home.svg" alt="" />Dashboard</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl bg-[#2443d8] px-3 text-sm font-black shadow-lg shadow-blue-950/30" href="/invoices"><img class="h-4 w-4 brightness-0 invert" src="/assets/ui/file-text.svg" alt="" />Invoices</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/payments"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/credit-card.svg" alt="" />Payments</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/wallets"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/wallet.svg" alt="" />Wallets</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/analytics"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/bar-chart-3.svg" alt="" />Analytics</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/settings"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/settings.svg" alt="" />Settings</a>
         </nav>
+
+        <div class="mx-4 mt-auto rounded-[14px] border border-white/15 bg-white/[0.04] p-3">
+          <div class="mb-1.5 flex h-5 w-5 items-center justify-center rounded-md text-yellow-300">
+            <img class="h-4 w-4" src="/assets/ui/star.svg" alt="" />
+          </div>
+          <p class="text-sm font-black">AfriSettle Pro</p>
+          <p class="mt-1 text-xs leading-4 text-slate-300">Unlock advanced features and lower fees.</p>
+          <button class="mt-2 h-9 w-full rounded-lg bg-[#2443d8] text-sm font-black text-white shadow-lg shadow-blue-950/30">Upgrade Now</button>
+        </div>
+
+        <div class="m-4 flex items-center gap-2.5 border-t border-white/10 pt-3">
+          <div id="merchant-avatar" class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-sm font-black text-[#06172d]">AS</div>
+          <div class="min-w-0 flex-1">
+            <p id="profile-name" class="truncate text-sm font-black">AfriSettle Merchant</p>
+            <p id="profile-email" class="truncate text-xs text-slate-400">merchant@example.com</p>
+          </div>
+          <img class="h-4 w-4 brightness-0 invert opacity-70" src="/assets/ui/chevron-down.svg" alt="" />
+        </div>
       </aside>
 
-      <main class="flex-1">
+      <main class="min-w-0 flex-1 overflow-x-hidden lg:ml-[220px]">
         <header class="border-b border-slate-200 bg-white">
-          <div class="px-6 py-5 lg:px-8">
-            <h1 class="text-xl font-semibold tracking-tight">Create Invoice</h1>
-            <p class="mt-1 text-sm text-slate-500">Create a new payment request for your customer.</p>
+          <div class="flex min-h-14 flex-col gap-2 px-4 py-2 xl:h-14 xl:flex-row xl:items-center xl:justify-between">
+            <div class="relative w-full max-w-[458px] flex-1">
+              <input id="top-search-input" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Search invoices, customers..." />
+              <img class="absolute left-3.5 top-2 h-5 w-5 opacity-50" src="/assets/ui/Filter.svg" alt="" />
+              <span class="absolute right-2 top-1.5 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-black text-slate-600">Ctrl K</span>
+            </div>
+            <div class="flex min-w-0 flex-wrap items-center gap-2.5">
+              <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700"><span class="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-emerald-500"></span>All Systems Operational</span>
+              <button class="relative flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white"><img class="h-5 w-5 opacity-80" src="/assets/ui/bell.svg" alt="Notifications" /><span class="absolute -right-1 -top-1 rounded-full bg-[#2443d8] px-1.5 text-xs font-black text-white">3</span></button>
+              <a class="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#2443d8] px-4 text-sm font-black text-white shadow-lg shadow-blue-700/20" href="/create-invoice"><img class="h-4 w-4 brightness-0 invert" src="/assets/ui/plus.svg" alt="" />Create Invoice</a>
+            </div>
           </div>
         </header>
 
-        <div class="px-6 py-6 lg:px-8">
-          <div class="max-w-3xl">
-            <div id="api-key-error" class="hidden mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"></div>
-            <div id="form-error" class="hidden mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"></div>
-            <div id="success-state" class="hidden rounded border border-emerald-200 bg-emerald-50 p-6">
-              <p class="text-sm font-semibold text-emerald-800">Invoice created successfully</p>
-              <p class="mt-2 text-sm text-emerald-700">
-                Invoice <span id="created-invoice-number" class="font-semibold"></span> is ready.
-              </p>
-              <a class="mt-5 inline-flex h-10 items-center rounded bg-emerald-600 px-4 text-sm font-semibold text-white" href="/dashboard">
-                View Dashboard
-              </a>
+        <div class="w-full max-w-full space-y-3 p-4">
+          <section class="flex min-h-[52px] flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <a class="inline-flex items-center gap-2 text-sm font-black text-[#2443d8]" href="/invoices"><span>&larr;</span> Back to Invoices</a>
+              <h1 class="mt-2 text-[28px] font-black leading-[34px] tracking-[-0.025em]">Create Invoice</h1>
+              <p class="mt-0.5 text-sm font-medium text-slate-600">Create a secure USDC payment request for your customer.</p>
             </div>
+            <a class="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-black text-slate-700" href="/invoices"><img class="h-4 w-4" src="/assets/ui/arrow-right.svg" alt="" />Cancel</a>
+          </section>
 
-            <form id="invoice-form" class="rounded border border-slate-200 bg-white">
-              <div class="border-b border-slate-200 px-6 py-4">
-                <h2 class="text-base font-semibold tracking-tight">Invoice Details</h2>
+          <form id="api-key-form" class="grid min-h-[48px] gap-2 rounded-xl border border-slate-200 bg-white p-[6px] shadow-sm md:grid-cols-[1fr_auto]">
+            <input id="api-key-input" class="h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" type="password" placeholder="Enter your merchant API key" />
+            <button id="api-key-save-button" class="h-9 rounded-lg bg-[#06172d] px-4 text-sm font-black text-white">Save API Key</button>
+            <div id="api-key-connected" class="hidden items-center justify-between gap-3 rounded-lg bg-emerald-50 px-3 py-1.5 md:col-span-2">
+              <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-sm font-black text-emerald-700">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-xs text-white">OK</span>
+                API Key Connected
+              </span>
+              <button id="api-key-change-button" class="h-8 rounded-lg border border-emerald-200 bg-white px-3 text-xs font-black text-emerald-700" type="button">Change</button>
+            </div>
+          </form>
+
+          <div id="message" class="hidden rounded-xl border px-4 py-2 text-sm font-bold"></div>
+
+          <section class="grid gap-3 xl:grid-cols-[minmax(0,1fr)_330px]">
+            <form id="invoice-form" class="min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div class="flex items-start gap-3 border-b border-slate-200 pb-4">
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50"><img class="h-5 w-5" src="/assets/ui/file-text.svg" alt="" /></span>
+                <div>
+                  <h2 class="text-lg font-black">Invoice Details</h2>
+                  <p class="mt-1 text-sm font-semibold text-slate-500">Required fields are validated before submission.</p>
+                </div>
               </div>
-              <div class="grid gap-5 p-6 sm:grid-cols-2">
+
+              <div class="mt-5 grid gap-4 md:grid-cols-2">
                 <label class="block">
-                  <span class="text-sm font-medium text-slate-700">Invoice Number</span>
-                  <input class="mt-2 h-10 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100" name="invoiceNumber" required />
+                  <span class="text-sm font-bold text-slate-600">Invoice Number</span>
+                  <input id="invoice-number" class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" name="invoiceNumber" autocomplete="off" />
+                  <span class="field-error mt-1 hidden text-xs font-bold text-red-600" data-error-for="invoiceNumber"></span>
                 </label>
+
                 <label class="block">
-                  <span class="text-sm font-medium text-slate-700">Customer Name</span>
-                  <input class="mt-2 h-10 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100" name="customerName" required />
+                  <span class="text-sm font-bold text-slate-600">Customer Name</span>
+                  <input class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" name="customerName" autocomplete="name" />
+                  <span class="field-error mt-1 hidden text-xs font-bold text-red-600" data-error-for="customerName"></span>
                 </label>
+
                 <label class="block">
-                  <span class="text-sm font-medium text-slate-700">Customer Email</span>
-                  <input class="mt-2 h-10 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100" name="customerEmail" required type="email" />
+                  <span class="text-sm font-bold text-slate-600">Customer Email</span>
+                  <input class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" name="customerEmail" autocomplete="email" type="email" />
+                  <span class="field-error mt-1 hidden text-xs font-bold text-red-600" data-error-for="customerEmail"></span>
                 </label>
+
                 <label class="block">
-                  <span class="text-sm font-medium text-slate-700">Amount</span>
-                  <input class="mt-2 h-10 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100" min="0.01" name="amount" required step="0.01" type="number" />
+                  <span class="text-sm font-bold text-slate-600">Amount</span>
+                  <input class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" min="0.01" name="amount" step="0.01" type="number" />
+                  <span class="field-error mt-1 hidden text-xs font-bold text-red-600" data-error-for="amount"></span>
                 </label>
+
                 <label class="block">
-                  <span class="text-sm font-medium text-slate-700">Currency</span>
-                  <input class="mt-2 h-10 w-full rounded border border-slate-300 px-3 text-sm uppercase outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100" maxlength="3" name="currency" required value="USD" />
+                  <span class="text-sm font-bold text-slate-600">Currency</span>
+                  <input class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-black text-slate-700" name="displayCurrency" value="USDC" disabled />
+                  <span class="mt-1 block text-xs font-semibold text-slate-500">Invoices settle in USDC.</span>
                 </label>
+
                 <label class="block">
-                  <span class="text-sm font-medium text-slate-700">Due Date</span>
-                  <input class="mt-2 h-10 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100" name="dueDate" type="date" />
+                  <span class="text-sm font-bold text-slate-600">Due Date</span>
+                  <input class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" name="dueDate" type="date" />
+                  <span class="field-error mt-1 hidden text-xs font-bold text-red-600" data-error-for="dueDate"></span>
                 </label>
-                <label class="block sm:col-span-2">
-                  <span class="text-sm font-medium text-slate-700">Description <span class="font-normal text-slate-400">(optional)</span></span>
-                  <textarea class="mt-2 min-h-28 w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100" name="description"></textarea>
+
+                <label class="block md:col-span-2">
+                  <span class="text-sm font-bold text-slate-600">Description</span>
+                  <textarea class="mt-1.5 min-h-28 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" name="description" placeholder="Add a short note for the customer"></textarea>
+                  <span class="field-error mt-1 hidden text-xs font-bold text-red-600" data-error-for="description"></span>
                 </label>
               </div>
-              <div class="flex items-center justify-end border-t border-slate-200 px-6 py-4">
-                <button id="submit-button" class="h-10 rounded bg-emerald-600 px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60" type="submit">
+
+              <div class="mt-5 flex flex-col-reverse gap-2 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-end">
+                <a class="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-5 text-sm font-black text-slate-700" href="/invoices">Cancel</a>
+                <button id="submit-button" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#2443d8] px-5 text-sm font-black text-white shadow-lg shadow-blue-700/20 disabled:cursor-not-allowed disabled:opacity-60" type="submit">
+                  <img class="h-4 w-4 brightness-0 invert" src="/assets/ui/plus.svg" alt="" />
                   Create Invoice
                 </button>
               </div>
             </form>
-          </div>
+
+            <aside class="space-y-3">
+              <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div class="flex items-start gap-3">
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-50"><img class="h-5 w-5" src="/assets/ui/shield-check.svg" alt="" /></span>
+                  <div>
+                    <h2 class="font-black">Secure USDC Invoice</h2>
+                    <p class="mt-2 text-sm font-semibold leading-6 text-slate-600">New invoices begin as drafts and can be shared once you assign a wallet or generate a Circle deposit address.</p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <h2 class="font-black">Payment Stack</h2>
+                <div class="mt-4 space-y-3">
+                  <div class="flex items-center justify-between rounded-xl border border-slate-200 p-3"><span class="flex items-center gap-2 text-sm font-black"><img class="h-5 w-5" src="/assets/brands/circle.svg" alt="" />Circle</span><span class="text-xs font-black text-emerald-600">Enabled</span></div>
+                  <div class="flex items-center justify-between rounded-xl border border-slate-200 p-3"><span class="flex items-center gap-2 text-sm font-black"><img class="h-5 w-5" src="/assets/brands/base.svg" alt="" />Base</span><span class="text-xs font-black text-emerald-600">Default</span></div>
+                  <div class="flex items-center justify-between rounded-xl border border-slate-200 p-3"><span class="flex items-center gap-2 text-sm font-black"><img class="h-5 w-5" src="/assets/ui/credit-card.svg" alt="" />USDC</span><span class="text-xs font-black text-emerald-600">Settlement</span></div>
+                </div>
+              </article>
+
+              <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <h2 class="font-black">Next Steps</h2>
+                <ol class="mt-3 space-y-2 text-sm font-semibold text-slate-600">
+                  <li class="flex gap-2"><span class="font-black text-[#2443d8]">1.</span><span>Create the invoice.</span></li>
+                  <li class="flex gap-2"><span class="font-black text-[#2443d8]">2.</span><span>Open the invoice detail page.</span></li>
+                  <li class="flex gap-2"><span class="font-black text-[#2443d8]">3.</span><span>Assign a wallet or generate a deposit address.</span></li>
+                  <li class="flex gap-2"><span class="font-black text-[#2443d8]">4.</span><span>Share the public payment link.</span></li>
+                </ol>
+              </article>
+            </aside>
+          </section>
         </div>
       </main>
     </div>

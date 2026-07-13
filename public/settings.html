@@ -6,69 +6,352 @@
     <title>Settings | AfriSettle</title>
     <link rel="icon" href="/assets/logo/favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html,
+      body {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+    </style>
   </head>
-  <body class="bg-[#f7f9fc] text-[#07182f]">
+  <body class="bg-[#f8fafc] text-[#07182f] antialiased">
     <div class="min-h-screen lg:flex">
-      <aside class="bg-[#06172d] text-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-72 lg:flex-col">
-        <div class="flex h-24 items-center px-7"><img class="h-12 w-auto" src="/assets/logo/afrisettle-light.png" alt="AfriSettle" /></div>
-        <div class="mx-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4"><p class="text-sm font-black">Lagos Digital Hub</p><p class="mt-1 w-fit rounded-full bg-emerald-400/10 px-2 py-1 text-xs font-black text-emerald-300">Verified Merchant</p></div>
-        <nav class="mt-8 space-y-2 px-5">
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/dashboard">Dashboard</a>
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/invoices">Invoices</a>
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/payments">Payments</a>
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/wallets">Wallets</a>
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/dashboard#analytics">Analytics</a>
-          <a class="block rounded-2xl bg-[#1557ff] px-4 py-3 text-sm font-black" href="/settings">Settings</a>
-        </nav>
-      </aside>
-      <main class="flex-1 lg:ml-72">
-        <header class="border-b border-slate-200 bg-white">
-          <div class="px-5 py-6 lg:px-8"><h1 class="text-3xl font-black">Settings</h1><p class="mt-1 text-slate-600">Manage merchant profile, API access and account overview.</p></div>
-        </header>
-        <div class="space-y-6 px-5 py-6 lg:px-8">
-          <div id="loading-state" class="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-600">Loading merchant settings...</div>
-          <div id="page-error" class="hidden rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-bold text-red-700"></div>
-          <div id="success-state" class="hidden rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-700"></div>
-          <section id="settings-content" class="hidden grid gap-6 xl:grid-cols-[minmax(0,1fr)_26rem]">
-            <div class="space-y-6">
-              <div class="rounded-2xl border border-slate-200 bg-white p-6">
-                <h2 class="text-xl font-black">Merchant Profile</h2>
-                <form id="profile-form" class="mt-5 space-y-4">
-                  <div id="profile-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700"></div>
-                  <label class="block"><span class="text-sm font-bold text-slate-600">Business Name</span><input id="business-name" class="mt-2 h-11 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" required /></label>
-                  <label class="block"><span class="text-sm font-bold text-slate-600">Merchant Email</span><input id="merchant-email" class="mt-2 h-11 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" required type="email" /></label>
-                  <label class="block"><span class="text-sm font-bold text-slate-600">Country</span><input id="merchant-country" class="mt-2 h-11 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Nigeria" /></label>
-                  <button id="save-profile-button" class="h-11 rounded-xl bg-[#1557ff] px-5 text-sm font-black text-white">Save Profile</button>
-                </form>
-              </div>
-              <div class="rounded-2xl border border-slate-200 bg-white p-6">
-                <h2 class="text-xl font-black">Default Wallet Information</h2>
-                <div id="default-wallet-empty" class="mt-4 rounded-xl border border-dashed border-slate-200 p-6 text-sm text-slate-500">No default wallet selected.</div>
-                <div id="default-wallet-content" class="hidden mt-4 space-y-3 text-sm">
-                  <p><span class="font-bold text-slate-500">Label:</span> <span id="default-wallet-label"></span></p>
-                  <p><span class="font-bold text-slate-500">Network:</span> <span id="default-wallet-network"></span></p>
-                  <p><span class="font-bold text-slate-500">Stablecoin:</span> <span id="default-wallet-stablecoin"></span></p>
-                  <p class="break-all"><span class="font-bold text-slate-500">Address:</span> <span id="default-wallet-address"></span></p>
-                </div>
-              </div>
+      <aside class="bg-[#06172d] text-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-[220px] lg:flex-col">
+        <div class="flex h-14 items-center px-4">
+          <img class="h-8 w-36 object-contain object-left brightness-0 invert" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
+        </div>
+
+        <div class="mx-4 rounded-[14px] border border-white/15 bg-white/[0.04] p-2.5 shadow-2xl shadow-black/10">
+          <div class="flex items-center gap-2.5">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-400/15">
+              <img class="h-4 w-4 brightness-0 invert" src="/assets/ui/home.svg" alt="" />
             </div>
-            <aside class="space-y-6">
-              <div class="rounded-2xl border border-slate-200 bg-white p-6">
-                <h2 class="text-xl font-black">API Key Information</h2>
-                <p id="masked-api-key" class="mt-4 rounded-xl bg-slate-50 p-4 font-mono text-sm">Not saved locally</p>
-                <p class="mt-3 text-sm leading-6 text-slate-600">The plain API key is only shown once at merchant creation and cannot be recovered.</p>
+            <div class="min-w-0 flex-1">
+              <p id="merchant-name" class="truncate text-sm font-black">Merchant account</p>
+              <p class="mt-0.5 w-fit rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-black text-emerald-300">Verified Merchant</p>
+            </div>
+            <img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/chevron-down.svg" alt="" />
+          </div>
+        </div>
+
+        <nav class="mt-4 space-y-1 px-4">
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/dashboard"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/home.svg" alt="" />Dashboard</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/invoices"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/file-text.svg" alt="" />Invoices</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/payments"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/credit-card.svg" alt="" />Payments</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/wallets"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/wallet.svg" alt="" />Wallets</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/analytics"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/bar-chart-3.svg" alt="" />Analytics</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl bg-[#2443d8] px-3 text-sm font-black shadow-lg shadow-blue-950/30" href="/settings"><img class="h-4 w-4 brightness-0 invert" src="/assets/ui/settings.svg" alt="" />Settings</a>
+        </nav>
+
+        <div class="mx-4 mt-auto rounded-[14px] border border-white/15 bg-white/[0.04] p-3">
+          <div class="mb-1.5 flex h-5 w-5 items-center justify-center rounded-md text-yellow-300">
+            <img class="h-4 w-4" src="/assets/ui/star.svg" alt="" />
+          </div>
+          <p class="text-sm font-black">AfriSettle Pro</p>
+          <p class="mt-1 text-xs leading-4 text-slate-300">Unlock advanced features and lower fees.</p>
+          <button class="mt-2 h-9 w-full rounded-lg bg-[#2443d8] text-sm font-black text-white shadow-lg shadow-blue-950/30">Upgrade Now</button>
+        </div>
+
+        <div class="m-4 flex items-center gap-2.5 border-t border-white/10 pt-3">
+          <div id="merchant-avatar" class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-sm font-black text-[#06172d]">AS</div>
+          <div class="min-w-0 flex-1">
+            <p id="profile-name" class="truncate text-sm font-black">AfriSettle Merchant</p>
+            <p id="profile-email" class="truncate text-xs text-slate-400">merchant@example.com</p>
+          </div>
+          <img class="h-4 w-4 brightness-0 invert opacity-70" src="/assets/ui/chevron-down.svg" alt="" />
+        </div>
+      </aside>
+
+      <main class="min-w-0 flex-1 overflow-x-hidden lg:ml-[220px]">
+        <header class="border-b border-slate-200 bg-white">
+          <div class="flex min-h-14 flex-col gap-2 px-4 py-2 xl:h-14 xl:flex-row xl:items-center xl:justify-between">
+            <div class="relative w-full max-w-[458px] flex-1">
+              <input id="top-search-input" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Search settings, integrations..." />
+              <img class="absolute left-3.5 top-2 h-5 w-5 opacity-50" src="/assets/ui/Filter.svg" alt="" />
+              <span class="absolute right-2 top-1.5 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-black text-slate-600">Ctrl K</span>
+            </div>
+            <div class="flex min-w-0 flex-wrap items-center gap-2.5">
+              <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700"><span class="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-emerald-500"></span>All Systems Operational</span>
+              <button class="relative flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white"><img class="h-5 w-5 opacity-80" src="/assets/ui/bell.svg" alt="Notifications" /><span class="absolute -right-1 -top-1 rounded-full bg-[#2443d8] px-1.5 text-xs font-black text-white">3</span></button>
+              <a class="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#2443d8] px-4 text-sm font-black text-white shadow-lg shadow-blue-700/20" href="/create-invoice"><img class="h-4 w-4 brightness-0 invert" src="/assets/ui/plus.svg" alt="" />Create Invoice <img class="h-4 w-4 brightness-0 invert" src="/assets/ui/chevron-down.svg" alt="" /></a>
+            </div>
+          </div>
+        </header>
+
+        <div class="w-full max-w-full space-y-3 p-4">
+          <section class="flex min-h-[52px] flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h1 class="text-[28px] font-black leading-[34px] tracking-[-0.025em]">Settings</h1>
+              <p class="mt-0.5 text-sm font-medium text-slate-600">Manage your account, preferences, and integrations.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="refresh-settings" class="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-black text-slate-700" type="button"><img class="h-4 w-4" src="/assets/ui/refresh-cw.svg" alt="" />Refresh</button>
+            </div>
+          </section>
+
+          <form id="api-key-form" class="grid min-h-[48px] gap-2 rounded-xl border border-slate-200 bg-white p-[6px] shadow-sm md:grid-cols-[1fr_auto]">
+            <input id="api-key-input" class="h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" type="password" placeholder="Enter your merchant API key" />
+            <button id="api-key-save-button" class="h-9 rounded-lg bg-[#06172d] px-4 text-sm font-black text-white">Save API Key</button>
+            <div id="api-key-connected" class="hidden items-center justify-between gap-3 rounded-lg bg-emerald-50 px-3 py-1.5 md:col-span-2">
+              <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-sm font-black text-emerald-700">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-xs text-white">OK</span>
+                API Key Connected
+              </span>
+              <button id="api-key-change-button" class="h-8 rounded-lg border border-emerald-200 bg-white px-3 text-xs font-black text-emerald-700" type="button">Change</button>
+            </div>
+          </form>
+
+          <div id="message" class="hidden rounded-xl border px-4 py-2 text-sm font-bold"></div>
+          <div id="loading-state" class="rounded-xl border border-slate-200 bg-white p-4 text-sm font-bold text-slate-600 shadow-sm">Loading merchant settings...</div>
+
+          <section id="settings-content" class="hidden space-y-3">
+            <nav class="flex gap-2 overflow-x-auto border-b border-slate-200 bg-white px-3 pt-2 shadow-sm sm:rounded-xl sm:border">
+              <button class="settings-tab border-b-2 border-[#2443d8] px-3 py-3 text-sm font-black text-[#2443d8]" data-tab="profile" type="button">Profile</button>
+              <button class="settings-tab border-b-2 border-transparent px-3 py-3 text-sm font-bold text-slate-600 hover:text-[#2443d8]" data-tab="integrations" type="button">Integrations</button>
+              <button class="settings-tab border-b-2 border-transparent px-3 py-3 text-sm font-bold text-slate-600 hover:text-[#2443d8]" data-tab="preferences" type="button">Preferences</button>
+              <button class="settings-tab border-b-2 border-transparent px-3 py-3 text-sm font-bold text-slate-600 hover:text-[#2443d8]" data-tab="security" type="button">Security</button>
+            </nav>
+
+            <section id="profile-panel" class="settings-panel grid gap-3 xl:grid-cols-[minmax(0,1fr)_330px]">
+              <div class="min-w-0 space-y-3">
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-start gap-3">
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50"><img class="h-5 w-5" src="/assets/ui/home.svg" alt="" /></span>
+                    <div>
+                      <h2 class="text-lg font-black">Business Information</h2>
+                      <p class="mt-1 text-sm font-semibold text-slate-500">Update your business details and contact information.</p>
+                    </div>
+                  </div>
+                  <form id="profile-form" class="mt-5 grid gap-4">
+                    <div id="profile-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-bold text-red-700"></div>
+                    <label class="block">
+                      <span class="text-sm font-bold text-slate-600">Business Name</span>
+                      <input id="business-name" class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" required />
+                    </label>
+                    <label class="block">
+                      <span class="text-sm font-bold text-slate-600">Business Email</span>
+                      <input id="merchant-email" class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" required type="email" />
+                    </label>
+                    <div class="grid gap-4 md:grid-cols-2">
+                      <label class="block">
+                        <span class="text-sm font-bold text-slate-600">Business Type</span>
+                        <select id="business-type" class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+                          <option>Retail</option>
+                          <option>Technology</option>
+                          <option>Services</option>
+                          <option>Logistics</option>
+                          <option>Other</option>
+                        </select>
+                      </label>
+                      <label class="block">
+                        <span class="text-sm font-bold text-slate-600">Country</span>
+                        <input id="merchant-country" class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Nigeria" />
+                      </label>
+                    </div>
+                    <label class="block">
+                      <span class="text-sm font-bold text-slate-600">Default Currency</span>
+                      <input class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-black text-slate-700" value="USDC" disabled />
+                    </label>
+                    <div class="flex flex-wrap items-center gap-3">
+                      <button id="save-profile-button" class="h-10 rounded-lg bg-[#2443d8] px-5 text-sm font-black text-white shadow-lg shadow-blue-700/20">Save Changes</button>
+                      <span id="unsaved-profile" class="hidden text-sm font-bold text-amber-600">Unsaved changes</span>
+                    </div>
+                  </form>
+                </article>
+
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-start gap-3">
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-50"><img class="h-5 w-5" src="/assets/ui/wallet.svg" alt="" /></span>
+                    <div>
+                      <h2 class="text-lg font-black">Default Wallet Information</h2>
+                      <p class="mt-1 text-sm font-semibold text-slate-500">Your selected wallet for settlement and invoice payment instructions.</p>
+                    </div>
+                  </div>
+                  <div id="default-wallet-empty" class="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-5 text-sm font-semibold text-slate-500">No default wallet selected.</div>
+                  <div id="default-wallet-content" class="mt-4 hidden grid gap-3 md:grid-cols-2">
+                    <div class="rounded-xl border border-slate-200 p-3"><p class="text-xs font-black uppercase tracking-wide text-slate-500">Label</p><p id="default-wallet-label" class="mt-1 font-black"></p></div>
+                    <div class="rounded-xl border border-slate-200 p-3"><p class="text-xs font-black uppercase tracking-wide text-slate-500">Network</p><p id="default-wallet-network" class="mt-1 font-black"></p></div>
+                    <div class="rounded-xl border border-slate-200 p-3"><p class="text-xs font-black uppercase tracking-wide text-slate-500">Stablecoin</p><p id="default-wallet-stablecoin" class="mt-1 font-black"></p></div>
+                    <div class="rounded-xl border border-slate-200 p-3"><p class="text-xs font-black uppercase tracking-wide text-slate-500">Address</p><p id="default-wallet-address" class="mt-1 break-all text-sm font-black"></p></div>
+                  </div>
+                </article>
               </div>
-              <div class="rounded-2xl border border-slate-200 bg-white p-6">
-                <h2 class="text-xl font-black">Account Overview</h2>
-                <dl class="mt-5 space-y-4 text-sm">
-                  <div class="flex justify-between"><dt>Merchant ID</dt><dd id="merchant-id" class="font-black"></dd></div>
-                  <div class="flex justify-between"><dt>Member Since</dt><dd id="member-since" class="font-black"></dd></div>
-                  <div class="flex justify-between"><dt>Invoices</dt><dd id="invoice-total" class="font-black">0</dd></div>
-                  <div class="flex justify-between"><dt>Payments</dt><dd id="payment-total" class="font-black">0</dd></div>
-                  <div class="flex justify-between"><dt>Wallets</dt><dd id="wallet-total" class="font-black">0</dd></div>
-                </dl>
+
+              <aside class="space-y-3">
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50"><img class="h-6 w-6" src="/assets/ui/shield-check.svg" alt="" /></span>
+                    <div>
+                      <h2 class="font-black">Account Status</h2>
+                      <p class="mt-1 text-sm font-semibold text-slate-500">Your account is fully verified.</p>
+                    </div>
+                  </div>
+                  <dl class="mt-5 space-y-3 border-t border-slate-200 pt-4 text-sm">
+                    <div class="flex justify-between gap-3"><dt class="font-semibold text-slate-500">Merchant ID</dt><dd id="merchant-id" class="truncate font-black"></dd></div>
+                    <div class="flex justify-between gap-3"><dt class="font-semibold text-slate-500">Member Since</dt><dd id="member-since" class="font-black"></dd></div>
+                    <div class="flex justify-between gap-3"><dt class="font-semibold text-slate-500">Updated</dt><dd id="updated-at" class="font-black"></dd></div>
+                  </dl>
+                </article>
+
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-50"><img class="h-6 w-6" src="/assets/ui/star.svg" alt="" /></span>
+                    <div>
+                      <h2 class="font-black">Plan Information</h2>
+                      <p class="mt-1 text-sm font-semibold text-slate-500">You're on the Starter plan.</p>
+                    </div>
+                  </div>
+                  <dl class="mt-5 space-y-3 border-t border-slate-200 pt-4 text-sm">
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Monthly Invoices</dt><dd id="invoice-total" class="font-black">0</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Payments</dt><dd id="payment-total" class="font-black">0</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Wallets</dt><dd id="wallet-total" class="font-black">0</dd></div>
+                  </dl>
+                </article>
+              </aside>
+            </section>
+
+            <section id="integrations-panel" class="settings-panel hidden grid gap-3 xl:grid-cols-[minmax(0,1fr)_330px]">
+              <div class="space-y-3">
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <h2 class="text-lg font-black">Integrations</h2>
+                  <p class="mt-1 text-sm font-semibold text-slate-500">Infrastructure connected to your AfriSettle workspace.</p>
+                  <div class="mt-4 grid gap-3 md:grid-cols-2">
+                    <div class="rounded-xl border border-slate-200 p-4">
+                      <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3"><img class="h-8 w-8" src="/assets/brands/circle.svg" alt="Circle" /><div><p class="font-black">Circle Wallet Infrastructure</p><p class="text-sm font-semibold text-slate-500">Developer-controlled wallets</p></div></div>
+                        <span id="circle-status" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">Checking</span>
+                      </div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                      <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3"><img class="h-8 w-8" src="/assets/brands/base.svg" alt="Base" /><div><p class="font-black">Base Network</p><p class="text-sm font-semibold text-slate-500">Default USDC network</p></div></div>
+                        <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">Operational</span>
+                      </div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                      <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-50"><img class="h-5 w-5" src="/assets/ui/link.svg" alt="" /></span><div><p class="font-black">Webhooks</p><p class="text-sm font-semibold text-slate-500">Circle event receiver</p></div></div>
+                        <span id="webhook-status" class="rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-700">Configured in server</span>
+                      </div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                      <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50"><img class="h-5 w-5" src="/assets/ui/shield-check.svg" alt="" /></span><div><p class="font-black">API Key</p><p id="masked-api-key" class="font-mono text-sm font-semibold text-slate-500">Not saved locally</p></div></div>
+                        <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">Stored securely</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <h2 class="text-lg font-black">Connection Notes</h2>
+                  <div class="mt-4 grid gap-3 md:grid-cols-3">
+                    <div class="rounded-xl bg-slate-50 p-3"><p class="text-sm font-black">Secrets</p><p class="mt-1 text-sm font-semibold text-slate-500">Private credentials are never displayed in the browser.</p></div>
+                    <div class="rounded-xl bg-slate-50 p-3"><p class="text-sm font-black">Wallets</p><p class="mt-1 text-sm font-semibold text-slate-500">Merchant wallet IDs are kept server-side.</p></div>
+                    <div class="rounded-xl bg-slate-50 p-3"><p class="text-sm font-black">Payments</p><p class="mt-1 text-sm font-semibold text-slate-500">Circle, Base, and USDC are the supported payment stack.</p></div>
+                  </div>
+                </article>
               </div>
-            </aside>
+
+              <aside class="space-y-3">
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <h2 class="font-black">Integration Health</h2>
+                  <dl class="mt-4 space-y-3 text-sm">
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Provider</dt><dd class="font-black">Circle</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Network</dt><dd class="font-black">Base</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Currency</dt><dd class="font-black">USDC</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">API Access</dt><dd id="api-access-status" class="font-black text-emerald-600">Connected</dd></div>
+                  </dl>
+                </article>
+              </aside>
+            </section>
+
+            <section id="preferences-panel" class="settings-panel hidden grid gap-3 xl:grid-cols-[minmax(0,1fr)_330px]">
+              <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div class="flex items-start gap-3">
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50"><img class="h-5 w-5" src="/assets/ui/settings.svg" alt="" /></span>
+                  <div>
+                    <h2 class="text-lg font-black">Preferences</h2>
+                    <p class="mt-1 text-sm font-semibold text-slate-500">These preferences are stored locally until a backend settings API is added.</p>
+                  </div>
+                </div>
+                <form id="preferences-form" class="mt-5 space-y-4">
+                  <div class="grid gap-3 md:grid-cols-3">
+                    <label class="flex items-center justify-between rounded-xl border border-slate-200 p-4 text-sm font-black">Email notifications <input id="email-notifications" class="h-4 w-4" type="checkbox" /></label>
+                    <label class="flex items-center justify-between rounded-xl border border-slate-200 p-4 text-sm font-black">Payment notifications <input id="payment-notifications" class="h-4 w-4" type="checkbox" checked /></label>
+                    <label class="flex items-center justify-between rounded-xl border border-slate-200 p-4 text-sm font-black">Settlement notifications <input id="settlement-notifications" class="h-4 w-4" type="checkbox" checked /></label>
+                  </div>
+                  <div class="grid gap-4 md:grid-cols-3">
+                    <label class="block"><span class="text-sm font-bold text-slate-600">Default invoice due period</span><select id="due-period" class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-semibold"><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option><option value="45">45 days</option></select></label>
+                    <label class="block"><span class="text-sm font-bold text-slate-600">Default network</span><input class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-black text-slate-700" value="Base" disabled /></label>
+                    <label class="block"><span class="text-sm font-bold text-slate-600">Default currency</span><input class="mt-1.5 h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-black text-slate-700" value="USDC" disabled /></label>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <button id="save-preferences-button" class="h-10 rounded-lg bg-[#2443d8] px-5 text-sm font-black text-white shadow-lg shadow-blue-700/20">Save Preferences</button>
+                    <span id="preferences-status" class="text-sm font-bold text-slate-500">Local preferences</span>
+                  </div>
+                </form>
+              </article>
+
+              <aside class="space-y-3">
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <h2 class="font-black">Defaults</h2>
+                  <dl class="mt-4 space-y-3 text-sm">
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Network</dt><dd class="font-black">Base</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Currency</dt><dd class="font-black">USDC</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Due Period</dt><dd id="due-period-summary" class="font-black">14 days</dd></div>
+                  </dl>
+                </article>
+              </aside>
+            </section>
+
+            <section id="security-panel" class="settings-panel hidden grid gap-3 xl:grid-cols-[minmax(0,1fr)_330px]">
+              <div class="space-y-3">
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <h2 class="text-lg font-black">Security</h2>
+                  <div class="mt-4 grid gap-3 md:grid-cols-2">
+                    <div class="rounded-xl border border-slate-200 p-4">
+                      <div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50"><img class="h-5 w-5" src="/assets/ui/shield-check.svg" alt="" /></span><div><p class="font-black">API Key Status</p><p id="security-api-key" class="mt-1 text-sm font-semibold text-slate-500">No key saved in this browser.</p><p class="mt-3 rounded-lg bg-slate-50 p-3 text-sm font-semibold text-slate-600">API key stored securely. Plain keys cannot be recovered after merchant creation.</p></div></div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                      <div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-50"><img class="h-5 w-5" src="/assets/ui/refresh-cw.svg" alt="" /></span><div><p class="font-black">Regenerate API Key</p><p class="mt-1 text-sm font-semibold text-slate-500">API key rotation is not supported yet.</p><button class="mt-3 h-9 cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 px-4 text-sm font-black text-slate-400" disabled>Coming Soon</button></div></div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                      <div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50"><img class="h-5 w-5" src="/assets/ui/link.svg" alt="" /></span><div><p class="font-black">Webhook Signatures</p><p class="mt-1 text-sm font-semibold text-slate-500">Production webhooks should use Circle signature verification.</p><span class="mt-3 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">Configured server-side</span></div></div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                      <div class="flex items-start gap-3"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-50"><img class="h-5 w-5" src="/assets/ui/user.svg" alt="" /></span><div><p class="font-black">Two-factor Authentication</p><p class="mt-1 text-sm font-semibold text-slate-500">Additional login security is planned.</p><span class="mt-3 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">Coming Soon</span></div></div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <aside class="space-y-3">
+                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <h2 class="font-black">Session Information</h2>
+                  <dl class="mt-4 space-y-3 text-sm">
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Auth Method</dt><dd class="font-black">x-api-key</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Local Key</dt><dd id="session-api-key" class="font-black">Not saved</dd></div>
+                    <div class="flex justify-between"><dt class="font-semibold text-slate-500">Merchant Isolation</dt><dd class="font-black text-emerald-600">Enabled</dd></div>
+                  </dl>
+                </article>
+                <article class="rounded-xl border border-red-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-red-50"><img class="h-5 w-5" src="/assets/ui/circle-alert.svg" alt="" /></span>
+                    <div><h2 class="font-black">Danger Zone</h2><p class="mt-1 text-sm font-semibold text-slate-500">Destructive account actions are not available in MVP.</p></div>
+                  </div>
+                </article>
+              </aside>
+            </section>
+
+            <footer class="flex flex-col items-center justify-center gap-2 border-t border-slate-200 py-4 text-sm font-semibold text-slate-500 sm:flex-row">
+              <img class="h-6 w-auto" src="/assets/logo/afrisettle-symbol.png" alt="" />
+              <span>Secured by Circle</span>
+              <span class="hidden text-slate-300 sm:inline">.</span>
+              <span>Built on Base</span>
+              <span class="hidden text-slate-300 sm:inline">.</span>
+              <span>Stablecoin Infrastructure</span>
+            </footer>
           </section>
         </div>
       </main>

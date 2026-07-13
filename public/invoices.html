@@ -6,52 +6,177 @@
     <title>Invoices | AfriSettle</title>
     <link rel="icon" href="/assets/logo/favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html,
+      body {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      #invoice-table table {
+        min-width: 900px;
+      }
+
+      @media (min-width: 1280px) {
+        #invoice-summary > div {
+          min-height: 106px;
+        }
+      }
+    </style>
   </head>
-  <body class="bg-[#f7f9fc] text-[#07182f]">
+  <body class="bg-[#f8fafc] text-[#07182f] antialiased">
     <div class="min-h-screen lg:flex">
-      <aside class="bg-[#06172d] text-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-72 lg:flex-col">
-        <div class="flex h-24 items-center px-7"><img class="h-12 w-auto" src="/assets/logo/afrisettle-light.png" alt="AfriSettle" /></div>
-        <div class="mx-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4">
-          <p class="text-sm font-black">Lagos Digital Hub</p><p class="mt-1 w-fit rounded-full bg-emerald-400/10 px-2 py-1 text-xs font-black text-emerald-300">Verified Merchant</p>
+      <aside class="bg-[#06172d] text-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-[220px] lg:flex-col">
+        <div class="flex h-14 items-center px-4">
+          <img class="h-8 w-36 object-contain object-left brightness-0 invert" src="/assets/logo/afrisettle-wordmark.png" alt="AfriSettle" />
         </div>
-        <nav class="mt-8 space-y-2 px-5">
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/dashboard">Dashboard</a>
-          <a class="block rounded-2xl bg-[#1557ff] px-4 py-3 text-sm font-black" href="/invoices">Invoices</a>
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/payments">Payments</a>
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/wallets">Wallets</a>
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/dashboard#analytics">Analytics</a>
-          <a class="block rounded-2xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/10" href="/settings">Settings</a>
+
+        <div class="mx-4 rounded-[14px] border border-white/15 bg-white/[0.04] p-2.5 shadow-2xl shadow-black/10">
+          <div class="flex items-center gap-2.5">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-400/15">
+              <img class="h-4 w-4 brightness-0 invert" src="/assets/ui/home.svg" alt="" />
+            </div>
+            <div class="min-w-0 flex-1">
+              <p id="merchant-name" class="truncate text-sm font-black">Merchant account</p>
+              <p class="mt-0.5 w-fit rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-black text-emerald-300">Verified Merchant</p>
+            </div>
+            <img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/chevron-down.svg" alt="" />
+          </div>
+        </div>
+
+        <nav class="mt-4 space-y-1 px-4">
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/dashboard"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/home.svg" alt="" />Dashboard</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl bg-[#2443d8] px-3 text-sm font-black shadow-lg shadow-blue-950/30" href="/invoices"><img class="h-4 w-4 brightness-0 invert" src="/assets/ui/file-text.svg" alt="" />Invoices</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/payments"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/credit-card.svg" alt="" />Payments</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/wallets"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/wallet.svg" alt="" />Wallets</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/analytics"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/bar-chart-3.svg" alt="" />Analytics</a>
+          <a class="flex h-[38px] items-center gap-3 rounded-xl px-3 text-sm font-bold text-slate-300 transition-colors hover:bg-white/10" href="/settings"><img class="h-4 w-4 brightness-0 invert opacity-80" src="/assets/ui/settings.svg" alt="" />Settings</a>
         </nav>
+
+        <div class="mx-4 mt-auto rounded-[14px] border border-white/15 bg-white/[0.04] p-3">
+          <div class="mb-1.5 flex h-5 w-5 items-center justify-center rounded-md text-yellow-300">
+            <img class="h-4 w-4" src="/assets/ui/star.svg" alt="" />
+          </div>
+          <p class="text-sm font-black">AfriSettle Pro</p>
+          <p class="mt-1 text-xs leading-4 text-slate-300">Unlock advanced features and lower fees.</p>
+          <button class="mt-2 h-9 w-full rounded-lg bg-[#2443d8] text-sm font-black text-white shadow-lg shadow-blue-950/30">Upgrade Now</button>
+        </div>
+
+        <div class="m-4 flex items-center gap-2.5 border-t border-white/10 pt-3">
+          <div id="merchant-avatar" class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-sm font-black text-[#06172d]">AS</div>
+          <div class="min-w-0 flex-1">
+            <p id="profile-name" class="truncate text-sm font-black">AfriSettle Merchant</p>
+            <p id="profile-email" class="truncate text-xs text-slate-400">merchant@example.com</p>
+          </div>
+          <img class="h-4 w-4 brightness-0 invert opacity-70" src="/assets/ui/chevron-down.svg" alt="" />
+        </div>
       </aside>
-      <main class="flex-1 lg:ml-72">
+
+      <main class="min-w-0 flex-1 overflow-x-hidden lg:ml-[220px]">
         <header class="border-b border-slate-200 bg-white">
-          <div class="flex flex-col gap-4 px-5 py-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-            <input id="api-key-input" class="h-12 max-w-xl rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" type="password" placeholder="Merchant API key" />
-            <a class="inline-flex h-12 items-center rounded-xl bg-[#1557ff] px-5 text-sm font-black text-white" href="/create-invoice">+ Create Invoice</a>
+          <div class="flex min-h-14 flex-col gap-2 px-4 py-2 xl:h-14 xl:flex-row xl:items-center xl:justify-between">
+            <div class="relative w-full max-w-[458px] flex-1">
+              <input id="top-search-input" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-12 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Search invoices by ID, customer, or amount..." />
+              <img class="absolute left-3.5 top-2 h-5 w-5 opacity-50" src="/assets/ui/Filter.svg" alt="" />
+              <span class="absolute right-2 top-1.5 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-black text-slate-600">⌘ K</span>
+            </div>
+            <div class="flex min-w-0 flex-wrap items-center gap-2.5">
+              <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700"><span class="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-emerald-500"></span>All Systems Operational</span>
+              <button class="relative flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white"><img class="h-5 w-5 opacity-80" src="/assets/ui/bell.svg" alt="Notifications" /><span class="absolute -right-1 -top-1 rounded-full bg-[#2443d8] px-1.5 text-xs font-black text-white">9</span></button>
+              <a class="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#2443d8] px-4 text-sm font-black text-white shadow-lg shadow-blue-700/20" href="/create-invoice"><img class="h-4 w-4 brightness-0 invert" src="/assets/ui/plus.svg" alt="" />Create Invoice <img class="h-4 w-4 brightness-0 invert" src="/assets/ui/chevron-down.svg" alt="" /></a>
+            </div>
           </div>
         </header>
-        <div class="space-y-6 px-5 py-6 lg:px-8">
-          <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div><h1 class="text-3xl font-black">Invoices</h1><p class="mt-1 text-slate-600">Create, manage and track all invoices.</p></div>
-            <button id="export-button" class="h-11 rounded-xl border border-slate-200 bg-white px-5 text-sm font-black">Export</button>
-          </div>
-          <div id="message" class="hidden rounded-2xl border px-4 py-3 text-sm font-bold"></div>
-          <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            <div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-sm font-bold text-slate-500">Total Invoices</p><p id="total-invoices" class="mt-3 text-3xl font-black">0</p></div>
-            <div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-sm font-bold text-slate-500">Total Amount</p><p id="total-amount" class="mt-3 text-3xl font-black">0 USDC</p></div>
-            <div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-sm font-bold text-slate-500">Paid Invoices</p><p id="paid-invoices" class="mt-3 text-3xl font-black">0</p></div>
-            <div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-sm font-bold text-slate-500">Outstanding</p><p id="outstanding-invoices" class="mt-3 text-3xl font-black">0</p></div>
-          </section>
-          <section class="rounded-2xl border border-slate-200 bg-white p-5">
-            <div class="grid gap-3 lg:grid-cols-[1fr_12rem_12rem]">
-              <input id="search-input" class="h-11 rounded-xl border border-slate-200 px-4 text-sm outline-none" placeholder="Search by invoice ID, customer or amount..." />
-              <select id="status-filter" class="h-11 rounded-xl border border-slate-200 px-4 text-sm font-bold"><option value="">All Status</option><option>DRAFT</option><option>UNPAID</option><option>PENDING</option><option>PAID</option></select>
-              <select id="sort-select" class="h-11 rounded-xl border border-slate-200 px-4 text-sm font-bold"><option value="newest">Newest First</option><option value="oldest">Oldest First</option><option value="high">Amount High to Low</option><option value="low">Amount Low to High</option></select>
+
+        <div class="w-full max-w-full space-y-3 p-4">
+          <section class="flex min-h-[52px] flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h1 class="text-[28px] font-black leading-[34px] tracking-[-0.025em]">Invoices</h1>
+              <p class="mt-0.5 text-sm font-medium text-slate-600">Create, manage and track all invoices.</p>
             </div>
-            <div id="loading-state" class="mt-5 rounded-xl bg-slate-50 p-4 text-sm font-semibold text-slate-600">Loading invoices...</div>
-            <div id="invoice-table" class="mt-5 overflow-hidden rounded-xl border border-slate-100"></div>
-            <div id="empty-state" class="hidden mt-5 rounded-xl border border-dashed border-slate-200 p-10 text-center text-sm text-slate-500">No invoices found.</div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button id="export-button" class="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-black text-slate-700"><img class="h-4 w-4" src="/assets/ui/download.svg" alt="" />Export</button>
+              <button class="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-black text-slate-700"><img class="h-4 w-4" src="/assets/ui/Filter.svg" alt="" />Filter</button>
+            </div>
           </section>
+
+          <form id="api-key-form" class="grid min-h-[48px] gap-2 rounded-xl border border-slate-200 bg-white p-[6px] shadow-sm md:grid-cols-[1fr_auto]">
+            <input id="api-key-input" class="h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" type="password" placeholder="Enter your merchant API key" />
+            <button id="api-key-save-button" class="h-9 rounded-lg bg-[#06172d] px-4 text-sm font-black text-white">Save API Key</button>
+            <div id="api-key-connected" class="hidden items-center justify-between gap-3 rounded-lg bg-emerald-50 px-3 py-1.5 md:col-span-2">
+              <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-sm font-black text-emerald-700">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-xs text-white">✓</span>
+                API Key Connected
+              </span>
+              <button id="api-key-change-button" class="h-8 rounded-lg border border-emerald-200 bg-white px-3 text-xs font-black text-emerald-700" type="button">Change</button>
+            </div>
+          </form>
+
+          <div id="message" class="hidden rounded-xl border px-4 py-2 text-sm font-bold"></div>
+
+          <section id="invoice-summary" class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div class="relative rounded-xl border border-slate-200 bg-white p-4 pr-16 shadow-sm">
+              <div class="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-purple-100"><img class="h-5 w-5" src="/assets/ui/file-text.svg" alt="" /></div>
+              <p class="text-sm font-bold text-slate-600">Total Invoices</p>
+              <p id="total-invoices" class="mt-2 text-2xl font-black leading-8">0</p>
+              <p class="mt-1 text-xs font-bold text-emerald-600">↑ 18.6% <span class="text-slate-500">vs last 7 days</span></p>
+            </div>
+            <div class="relative rounded-xl border border-slate-200 bg-white p-4 pr-16 shadow-sm">
+              <div class="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-blue-100"><img class="h-5 w-5" src="/assets/ui/wallet.svg" alt="" /></div>
+              <p class="text-sm font-bold text-slate-600">Total Amount</p>
+              <p id="total-amount" class="mt-2 text-2xl font-black leading-8">0 USDC</p>
+              <p class="mt-1 text-xs font-bold text-emerald-600">↑ 24.3% <span class="text-slate-500">vs last 7 days</span></p>
+            </div>
+            <div class="relative rounded-xl border border-slate-200 bg-white p-4 pr-16 shadow-sm">
+              <div class="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-emerald-100"><img class="h-5 w-5" src="/assets/ui/shield-check.svg" alt="" /></div>
+              <p class="text-sm font-bold text-slate-600">Paid Invoices</p>
+              <p id="paid-invoices" class="mt-2 text-2xl font-black leading-8">0</p>
+              <p class="mt-1 text-xs font-bold text-emerald-600">↑ <span id="paid-rate">0%</span> <span class="text-slate-500">of total</span></p>
+            </div>
+            <div class="relative rounded-xl border border-slate-200 bg-white p-4 pr-16 shadow-sm">
+              <div class="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-amber-100"><img class="h-5 w-5" src="/assets/ui/clock.svg" alt="" /></div>
+              <p class="text-sm font-bold text-slate-600">Outstanding</p>
+              <p id="outstanding-invoices" class="mt-2 text-2xl font-black leading-8">0</p>
+              <p id="outstanding-amount" class="mt-1 text-xs font-bold text-red-600">0 USDC</p>
+            </div>
+          </section>
+
+          <section class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+            <div class="grid gap-3 xl:grid-cols-[minmax(0,1fr)_10rem_11rem_14rem]">
+              <div class="relative">
+                <input id="search-input" class="h-10 w-full rounded-lg border border-slate-200 pl-4 pr-10 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Search by invoice ID, customer or amount..." />
+                <img class="absolute right-3 top-2.5 h-5 w-5 opacity-60" src="/assets/ui/Filter.svg" alt="" />
+              </div>
+              <select id="status-filter" class="h-10 rounded-lg border border-slate-200 px-3 text-sm font-bold outline-none"><option value="">All Status</option><option>DRAFT</option><option>UNPAID</option><option>PENDING</option><option>PAID</option></select>
+              <select id="customer-filter" class="h-10 rounded-lg border border-slate-200 px-3 text-sm font-bold outline-none"><option value="">All Customers</option></select>
+              <div class="flex h-10 items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 text-sm font-bold">
+                <select id="date-filter" class="min-w-0 flex-1 bg-transparent outline-none">
+                  <option value="">All Dates</option>
+                  <option value="7">Last 7 Days</option>
+                  <option value="30">Last 30 Days</option>
+                  <option value="overdue">Overdue</option>
+                </select>
+                <img class="h-4 w-4 opacity-70" src="/assets/ui/clock.svg" alt="" />
+              </div>
+            </div>
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+              <select id="sort-select" class="h-9 rounded-lg border border-slate-200 px-3 text-sm font-bold outline-none">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="high">Amount High to Low</option>
+                <option value="low">Amount Low to High</option>
+              </select>
+              <p id="result-count" class="text-sm font-semibold text-slate-500">Showing 0 invoices</p>
+            </div>
+            <div id="loading-state" class="mt-3 rounded-xl bg-slate-50 p-4 text-sm font-semibold text-slate-600">Loading invoices...</div>
+            <div id="invoice-table" class="mt-3 max-w-full overflow-x-auto rounded-xl border border-slate-200"></div>
+            <div id="empty-state" class="hidden mt-3 rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">No invoices found.</div>
+            <div id="pagination" class="mt-3 flex flex-wrap items-center justify-between gap-3"></div>
+          </section>
+
+          <footer class="flex flex-col gap-3 py-2 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+            <p>&copy; 2026 AfriSettle. All rights reserved.</p>
+          </footer>
         </div>
       </main>
     </div>

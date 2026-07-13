@@ -302,6 +302,10 @@ app.get("/payments", (req, res) => {
   return res.sendFile(path.join(__dirname, "..", "public", "payments.html"));
 });
 
+app.get("/analytics", (req, res) => {
+  return res.sendFile(path.join(__dirname, "..", "public", "analytics.html"));
+});
+
 app.get("/create-invoice", (req, res) => {
   return res.sendFile(path.join(__dirname, "..", "public", "create-invoice.html"));
 });
