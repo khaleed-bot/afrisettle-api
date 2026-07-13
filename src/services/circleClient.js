@@ -135,6 +135,11 @@ async function request(path, options = {}) {
         {
           status: response.status,
           code: getCircleErrorCode(body),
+          details: {
+            method,
+            path,
+            body,
+          },
           retryable,
           requestId:
             response.headers.get("x-request-id") ||

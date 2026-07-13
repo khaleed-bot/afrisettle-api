@@ -559,61 +559,17 @@ async function syncCircleWalletRecord(client, merchantId, wallet) {
   });
 }
 
-async function getInvoicePaymentAddressData(merchant) {
-  if (merchant.circleMerchantWalletId) {
-    if (!circleClient.isConfigured()) {
-      throw new CircleApiError("Circle is not configured", {
-        code: "CIRCLE_NOT_CONFIGURED",
-        retryable: false,
-      });
-    }
-
-    const circleResponse = await circleClient.getWallet(
-      merchant.circleMerchantWalletId
-    );
-    const circleWallet = unwrapCircleWallet(circleResponse);
-
-    if (!circleWallet || !getCircleWalletId(circleWallet)) {
-      throw new CircleApiError("Circle returned an invalid wallet response", {
-        status: 502,
-        retryable: false,
-      });
-    }
-
-    const circleFields = getCircleWalletFields(circleWallet);
-
-    if (!circleFields.depositAddress) {
-      throw new CircleApiError("Circle wallet does not have a deposit address", {
-        status: 502,
-        retryable: false,
-      });
-    }
-
-    return {
-      data: {
-        ...circleFields,
-        walletAddress: circleFields.depositAddress,
-        stablecoin: "USDC",
-      },
-      circleWallet,
-      source: "CIRCLE",
-    };
-  }
-
+async function getDefaultWalletPaymentAddressData(merchantId) {
   const defaultWallet = await prisma.wallet.findFirst({
-    where: { merchantId: merchant.id },
+    where: { merchantId },
     orderBy: [
       { isDefault: "desc" },
       { createdAt: "desc" },
     ],
   });
 
-  if (!defaultWallet) {
-    return {
-      data: {},
-      circleWallet: null,
-      source: null,
-    };
+  if (!defaultWallet || !defaultWallet.address) {
+    return null;
   }
 
   return {
@@ -625,7 +581,98 @@ async function getInvoicePaymentAddressData(merchant) {
     },
     circleWallet: null,
     source: "WALLET",
+    wallet: defaultWallet,
   };
+}
+
+function logCircleWalletSyncFailure(error, merchantId) {
+  const details = error && error.details ? error.details : {};
+  const body = details.body || {};
+
+  console.warn("Circle wallet sync failed; using stored wallet if available", {
+    merchantId,
+    endpoint: details.path || "/v1/w3s/wallets/:id",
+    method: details.method || "GET",
+    status: error && error.status,
+    code: error && error.code,
+    message:
+      (body && (body.message || body.error || body.description)) ||
+      (error && error.message),
+    circleResponse: body || null,
+  });
+}
+
+async function getInvoicePaymentAddressData(merchant) {
+  const defaultWalletPaymentAddress = await getDefaultWalletPaymentAddressData(
+    merchant.id
+  );
+
+  if (merchant.circleMerchantWalletId && circleClient.isConfigured()) {
+    try {
+      const circleResponse = await circleClient.getWallet(
+        merchant.circleMerchantWalletId
+      );
+      const circleWallet = unwrapCircleWallet(circleResponse);
+
+      if (!circleWallet || !getCircleWalletId(circleWallet)) {
+        throw new CircleApiError("Circle returned an invalid wallet response", {
+          status: 502,
+          retryable: false,
+        });
+      }
+
+      const circleFields = getCircleWalletFields(circleWallet);
+
+      if (!circleFields.depositAddress) {
+        throw new CircleApiError("Circle wallet does not have a deposit address", {
+          status: 502,
+          retryable: false,
+        });
+      }
+
+      return {
+        data: {
+          ...circleFields,
+          walletAddress: circleFields.depositAddress,
+          stablecoin: "USDC",
+        },
+        circleWallet,
+        source: "CIRCLE",
+      };
+    } catch (error) {
+      logCircleWalletSyncFailure(error, merchant.id);
+
+      if (defaultWalletPaymentAddress) {
+        return defaultWalletPaymentAddress;
+      }
+
+      throw error;
+    }
+  }
+
+  if (merchant.circleMerchantWalletId && !circleClient.isConfigured()) {
+    console.warn("Circle is not configured; using stored wallet if available", {
+      merchantId: merchant.id,
+    });
+
+    if (defaultWalletPaymentAddress) {
+      return defaultWalletPaymentAddress;
+    }
+
+    throw new CircleApiError("Circle is not configured", {
+      code: "CIRCLE_NOT_CONFIGURED",
+      retryable: false,
+    });
+  }
+
+  return (
+    defaultWalletPaymentAddress || {
+      data: {},
+      circleWallet: null,
+      source: null,
+      wallet: null,
+    }
+  );
 }
 
 function normalizeCircleBlockchain(value, defaultValue) {
